@@ -4,10 +4,7 @@
 
 # print(data_for_load.head())
 
-lista = [1, 2, 3, 4]
+lista = [1, 2, 3, None]
+x = None
 
-for i in range(5):
-    if i == 2:
-        continue
-    
-    print(i)
+print(x not in lista)

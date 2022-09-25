@@ -1,5 +1,4 @@
 from json.encoder import INFINITY
-from operator import contains
 
 
 def generar_espacios(data, barco):
@@ -7,8 +6,15 @@ def generar_espacios(data, barco):
         bay = int(row_data_slot['BAY'])
         stack = int(row_data_slot['STACK'])
         tier = int(row_data_slot['TIER'])
-        barco.bays[bay].espacio[tier][stack][0] = 0
-        barco.bays[bay].espacio[tier][stack][1] = 0
+        refrigerado = row_data_slot['REEFER']
+        carga_peligrosa = row_data_slot['DA']
+        barco.bays[bay].espacio[tier][stack][0] = 0 + refrigerado
+        barco.bays[bay].espacio[tier][stack][1] = 0 + refrigerado
+
+        if carga_peligrosa == 0:
+            barco.bays[bay].espacio[tier][stack][0] += 2
+            barco.bays[bay].espacio[tier][stack][1] += 2
+
 
 def calcular_centro_masa(barco):
     centro_gravedad = {'lcg': 0, 'tcg': 0, 'vcg': 0}
@@ -17,7 +23,7 @@ def calcular_centro_masa(barco):
         for tier in bay.espacio:
             for slots in tier:
                 for container in slots:
-                    if container != 0 and container != None:
+                    if container not in [0, 1, 2, None]:
                         aux_tcg = centro_gravedad['tcg']
                         aux_vcg = centro_gravedad['vcg']
                         centro_gravedad['tcg'] = (aux_tcg * peso + container.tcg * container.peso) / (peso + container.peso)
@@ -30,7 +36,6 @@ def calcular_centro_masa(barco):
         peso += bay.peso
     
     return centro_gravedad
-
 
 
 def calcular_esfuerzos_corte(data_hydrostatic, data_buoyancy, bay, barco):
@@ -54,26 +59,26 @@ def over_stowage(barco):
             ya_revisados = []
             for i in range(18):
                 aux = [None, None]
-                if bay.espacio[i][stack][0] != None and bay.espacio[i][stack][0] != 0:
+                if bay.espacio[i][stack][0] not in [0, 1, 2, None]:
                     if bay.espacio[i][stack][0].end_port not in ya_revisados:
                         aux[0] = bay.espacio[i][stack][0].end_port 
                         ya_revisados.append(aux[0])
                     
-                if bay.espacio[i][stack][1] != None and bay.espacio[i][stack][1] != 0:
+                if bay.espacio[i][stack][1] not in [0, 1, 2, None]:
                     if bay.espacio[i][stack][1].end_port not in ya_revisados:   
                         aux[1] = bay.espacio[i][stack][1].end_port
                         ya_revisados.append(aux[1])
 
                 for tier in range(i + 1, 18):
                     slots = bay.espacio[tier][stack]
-                    if slots[0] != 0 and slots[0] != None:
+                    if slots[0] not in [0, 1, 2, None]:
                         if aux[0] != None:
                             if aux[0] < slots[0].end_port:
                                 contador += 1                                 
                         if slots[0].largo == 40:
                             continue
                         
-                    if slots[1] != 0 and slots[1] != None:
+                    if slots[1] not in [0, 1, 2, None]:
                         if aux[1] != None:
                             if aux[1] < slots[1].end_port:
                                 contador += 1
@@ -85,7 +90,7 @@ def calcular_valor(barco):
         for tier in bay.espacio:
             for slots in tier:
                 for container in slots:
-                    if container != 0 and container != None:
+                    if container not in [0, 1, 2, None]:
                         valor += container.valor
     return valor
 
@@ -95,7 +100,7 @@ def maximo_peso(bay):
     for tier in bay.espacios:
         for stack in range(16):
             for container in tier[stack]:
-                if container != 0 and container != None:
+                if container not in [0, 1, 2, None]:
                     if contador_tier < 9:
                         peso_restante[0][stack] -= container.peso
                     
@@ -103,5 +108,3 @@ def maximo_peso(bay):
                         peso_restante[1][stack] -= container.peso
         contador_tier += 1
     return peso_restante
-                        
-
