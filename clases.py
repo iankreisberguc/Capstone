@@ -1,0 +1,31 @@
+# import pandas as pd
+
+class Barco:
+    def __init__(self):
+        self.bays = []
+
+    def generar_bays(self, data):
+        for idex, row in data.iterrows():
+            bay = Bay(row['lcg (m)'], row['maxShear (ton)'], row['minShear (ton)'], row['maxBending (ton*m)'], row['constWeight (ton)'])
+            self.bays.append(bay)
+        
+class Bay:
+    def __init__(self, lcg, max_esfuerzo_corte, min_esfuerzo_corte, max_bending, peso):
+        self.lcg = lcg
+        # self.vcg = 15
+        self.max_esfuerzo_corte = max_esfuerzo_corte
+        self.min_esfuerzo_corte = min_esfuerzo_corte
+        self.max_bending = max_bending
+        self.peso = peso
+        self.espacio = [[[None, None] for stack in range(16)] for tier in range(18)]
+
+class Container: 
+    def __init__(self, peso, tipo, valor, end_port, largo, tcg, vcg, es_cargado):
+        self.peso = peso
+        self.tipo = tipo
+        self.valor = valor
+        self.end_port = end_port
+        self.largo = largo 
+        self.tcg = tcg
+        self.vcg = vcg 
+        self.es_cargado = es_cargado
