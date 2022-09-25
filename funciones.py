@@ -1,5 +1,4 @@
-from inspect import stack
-from wsgiref.validate import validator
+from operator import contains
 
 
 def generar_espacios(data, barco):
@@ -75,3 +74,20 @@ def calcular_valor(barco):
                     if container != 0 and container != None:
                         valor += container.valor
     return valor
+
+def maximo_peso(bay):
+    peso_restante = [[200 for stack in range(16)], [250 for stack in range(16)]]
+    contador_bay = 0
+    for tier in bay.espacios:
+        for stack in range(16):
+            for container in tier[stack]:
+                if container != 0 and container != None:
+                    if contador_bay < 9:
+                        peso_restante[0][stack] -= container.peso
+                    
+                    if contador_bay > 9:
+                        peso_restante[1][stack] -= container.peso
+    
+    return peso_restante
+                        
+

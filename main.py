@@ -32,3 +32,4 @@ for index, row in data_loaded.iterrows():
     else:
         barco.bays[int(bay)].espacio[int(tier)][int(stack)][int(slot)-1] = container  
 
+
