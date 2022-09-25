@@ -1,3 +1,4 @@
+from json.encoder import INFINITY
 from operator import contains
 
 
@@ -30,9 +31,22 @@ def calcular_centro_masa(barco):
     
     return centro_gravedad
 
-def calcular_esfuerzos_corte(data_hydrostatic, data_buoyancy, bay):
-    pass
-    
+
+
+def calcular_esfuerzos_corte(data_hydrostatic, data_buoyancy, bay, barco):
+    barco.actualizar_peso()
+    menor_index = -1
+    menor_val = INFINITY
+    for i in range(len(data_hydrostatic)):
+        delta = abs(data_hydrostatic.iloc[i]['displacement (ton)']-barco.peso)
+        if delta<menor_val:
+            menor_val = delta
+            menor_index = i
+    dis_index = menor_index
+    esfuerzo = barco.bays[bay].peso - data_buoyancy.iloc[dis_index][bay]
+    return esfuerzo
+
+
 def over_stowage(barco):
     contador = 0
     for bay in barco.bays:

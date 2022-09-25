@@ -3,11 +3,18 @@
 class Barco:
     def __init__(self):
         self.bays = []
+        self.peso = 0
 
     def generar_bays(self, data):
         for idex, row in data.iterrows():
             bay = Bay(row['lcg (m)'], row['maxShear (ton)'], row['minShear (ton)'], row['maxBending (ton*m)'], row['constWeight (ton)'])
             self.bays.append(bay)
+
+    def actualizar_peso(self):
+        peso = 0
+        for bay in self.bays:
+            peso += bay.peso
+        self.peso = peso
         
 class Bay:
     def __init__(self, lcg, max_esfuerzo_corte, min_esfuerzo_corte, max_bending, peso):
