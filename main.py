@@ -1,7 +1,7 @@
 import pandas as pd 
 from clases import Bay, Barco, Container
 from funciones import generar_espacios, calcular_centro_masa,\
-    over_stowage, calcular_valor, calcular_esfuerzos_corte
+    over_stowage, calcular_valor, verificar_esfuerfos_de_corte
 
 
 data_barco = pd.read_excel('container_ship_data.xlsx', 'Ship_bays_estr_data', skiprows=4, usecols="C:I", header=1)
@@ -30,9 +30,9 @@ for index, row in data_loaded.iterrows():
     container = Container(peso, tipo, valor, end_port, largo, tcg, vcg, es_cargado)
 
     if barco.bays[int(bay)].espacio[int(tier)][int(stack)][int(slot)-1] == None:
-        print('Revisa el codigo que hay un error')
+        print('Revisa el codigo que hay un error pq hay un comteiner en una posicion invalida')
     
     else:
         barco.bays[int(bay)].espacio[int(tier)][int(stack)][int(slot)-1] = container  
 
-print(calcular_esfuerzos_corte(data_hydrostatic, data_buoyancy, 1, barco))
+print(calcular_centro_masa(barco))

@@ -1,5 +1,14 @@
 from json.encoder import INFINITY
 
+def verificar_factibilidad_fisica(data_hydrostatic, data_buoyancy,barco):
+    #centro de G incompleto
+    dis_index = calcular_displacemnt_index(data_hydrostatic, barco)
+    if verificar_esfuerfos_de_corte(data_buoyancy, barco, dis_index) and\
+        verificar_centro_de_dravedad(barco, data_hydrostatic, dis_index):
+
+        return True
+    else:
+        return False
 
 def generar_espacios(data, barco):
     for index_data_slot, row_data_slot in data.iterrows():
@@ -37,8 +46,21 @@ def calcular_centro_masa(barco):
     
     return centro_gravedad
 
+def verificar_centro_de_dravedad(barco, data_hydrostatic, dis_index):
+    cen_grav = calcular_centro_masa(barco)
+    """
+    if cen_grav['lcg'] < data_hydrostatic.iloc[dis_index]['minLcg (m)'] or\
+        cen_grav['lcg'] > ata_hydrostatic.iloc[dis_index]['maxLcg (m)']:
+        return False
+    """
+    if cen_grav['tcg'] < data_hydrostatic.iloc[dis_index]['minTcg (m)'] or\
+        cen_grav['tcg'] > data_hydrostatic.iloc[dis_index]['maxTcg (m)']:
+        return False
+    #falta el vcg que no se como verificarlo
+    return True
 
-def calcular_esfuerzos_corte(data_hydrostatic, data_buoyancy, bay, barco):
+def calcular_displacemnt_index(data_hydrostatic, barco):
+    #El displacemnt index en realidad es -1 pues se utilizo el index fe DF.
     barco.actualizar_peso()
     menor_index = -1
     menor_val = INFINITY
@@ -48,8 +70,19 @@ def calcular_esfuerzos_corte(data_hydrostatic, data_buoyancy, bay, barco):
             menor_val = delta
             menor_index = i
     dis_index = menor_index
+    return dis_index
+
+def calcular_esfuerzos_corte(data_buoyancy, bay, barco, dis_index):
     esfuerzo = barco.bays[bay].peso - data_buoyancy.iloc[dis_index][bay]
     return esfuerzo
+
+def verificar_esfuerfos_de_corte(data_buoyancy, barco, dis_index):
+    for bay in range(20):
+        esfuezo = calcular_esfuerzos_corte(data_buoyancy, bay, barco, dis_index)
+        if esfuezo > barco.bays[bay].max_esfuerzo_corte or\
+            esfuezo < barco.bays[bay].min_esfuerzo_corte:
+            return False
+    return True
 
 
 def over_stowage(barco):

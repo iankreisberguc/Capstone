@@ -14,7 +14,16 @@ class Barco:
         peso = 0
         for bay in self.bays:
             peso += bay.peso
+            for tier in range(18):
+                for stack in range(16):
+                    container_0 = bay.espacio[tier][stack][0]
+                    container_1 = bay.espacio[tier][stack][1]
+                    if container_0 not in [0, 1, 2, None]:
+                        peso += container_0.peso
+                    if container_1 not in [0, 1, 2, None]:
+                        peso += container_1.peso
         self.peso = peso
+
         
 class Bay:
     def __init__(self, lcg, max_esfuerzo_corte, min_esfuerzo_corte, max_bending, peso):

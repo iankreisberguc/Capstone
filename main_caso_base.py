@@ -1,17 +1,19 @@
 import pandas as pd 
 from clases import Bay, Barco, Container
-from funciones import generar_espacios, calcular_centro_masa
+from funciones import generar_espacios, calcular_centro_masa, verificar_factibilidad_fisica
 
 data_barco = pd.read_excel('container_ship_data.xlsx', 'Ship_bays_estr_data', skiprows=4, usecols="C:I", header=1)
 data_loaded = pd.read_excel('container_ship_data.xlsx', 'Loaded_containers_data')
 data_slot = pd.read_excel('container_ship_data.xlsx', 'Slot_data')
 data_for_load = pd.read_excel('container_ship_data.xlsx', 'Loading_list_data')
+data_hydrostatic = pd.read_excel('container_ship_data.xlsx', 'Ship_hydrostatic_data', skiprows=6, usecols="B:H", header=1)
+data_buoyancy = pd.read_excel('container_ship_data.xlsx', 'Ship_buoyancy_data', skiprows=4, usecols="C:X", header=1)
 
 barco = Barco()
 
 barco.generar_bays(data_barco)
 generar_espacios(data_slot, barco)
-print(data_loaded.head())
+
 
 for index, row in data_loaded.iterrows():
     bay = row['BAY']
@@ -35,3 +37,4 @@ for index, row in data_loaded.iterrows():
         barco.bays[int(bay)].espacio[int(tier)][int(stack)][int(slot)-1] = container  
 
 
+print(verificar_factibilidad_fisica(data_hydrostatic, data_buoyancy,barco))
