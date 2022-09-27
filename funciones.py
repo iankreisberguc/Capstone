@@ -1,6 +1,6 @@
 from json.encoder import INFINITY
 
-def verificar_factibilidad_fisica(data_hydrostatic, data_buoyancy,barco):
+def verificar_factibilidad_fisica(data_hydrostatic, data_buoyancy, barco):
     #centro de G incompleto
     dis_index = calcular_displacemnt_index(data_hydrostatic, barco)
     if verificar_esfuerfos_de_corte(data_buoyancy, barco, dis_index) and\
@@ -28,6 +28,7 @@ def generar_espacios(data, barco):
 def calcular_centro_masa(barco):
     centro_gravedad = {'lcg': 0, 'tcg': 0, 'vcg': 0}
     peso = 0
+    peso_otro = 36075
     for bay in barco.bays:
         for tier in bay.espacio:
             for slots in tier:
@@ -35,8 +36,10 @@ def calcular_centro_masa(barco):
                     if container not in [0, 1, 2, None]:
                         aux_tcg = centro_gravedad['tcg']
                         aux_vcg = centro_gravedad['vcg']
-                        centro_gravedad['tcg'] = (aux_tcg * peso + container.tcg * container.peso) / (peso + container.peso)
-                        centro_gravedad['vcg'] = (aux_vcg * peso + container.vcg * container.peso) / (peso + container.peso)
+                        aux_lcg = centro_gravedad['lcg']
+                        centro_gravedad['tcg'] = (aux_tcg * peso_otro + container.tcg * container.peso) / (peso_otro + container.peso)
+                        centro_gravedad['vcg'] = (aux_vcg * peso_otro + container.vcg * container.peso) / (peso_otro + container.peso)
+                        centro_gravedad['lcg'] = (aux_lcg * peso + bay.lcg * container.peso) / (peso + container.peso)
                         peso += container.peso
         aux_lcg = centro_gravedad['lcg']
         aux_vcg = centro_gravedad['vcg']
@@ -50,7 +53,7 @@ def verificar_centro_de_dravedad(barco, data_hydrostatic, dis_index):
     cen_grav = calcular_centro_masa(barco)
     
     if cen_grav['lcg'] < data_hydrostatic.iloc[dis_index]['minLcg (m)'] or\
-        cen_grav['lcg'] > ata_hydrostatic.iloc[dis_index]['maxLcg (m)']:
+        cen_grav['lcg'] > data_hydrostatic.iloc[dis_index]['maxLcg (m)']:
         return False
     
     if cen_grav['tcg'] < data_hydrostatic.iloc[dis_index]['minTcg (m)'] or\

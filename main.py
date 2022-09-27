@@ -29,10 +29,9 @@ for index, row in data_loaded.iterrows():
     vcg = float(data_slot[(data_slot.BAY==bay) & (data_slot.STACK==stack) & (data_slot.TIER==tier) & (data_slot.SLOT==1)].VCG)
     container = Container(peso, tipo, valor, end_port, largo, tcg, vcg, es_cargado)
 
-    if barco.bays[int(bay)].espacio[int(tier)][int(stack)][int(slot)-1] == None:
-        print('Revisa el codigo que hay un error pq hay un comteiner en una posicion invalida')
-    
-    else:
-        barco.bays[int(bay)].espacio[int(tier)][int(stack)][int(slot)-1] = container  
-
-print(calcular_centro_masa(barco))
+    if bay == 15 and stack == 1:
+        if barco.bays[int(bay)].espacio[int(tier)][int(stack)][int(slot)-1] == None:
+            print('Revisa el codigo que hay un error pq hay un comteiner en una posicion invalida')
+        
+        else:
+            barco.bays[int(bay)].espacio[int(tier)][int(stack)][int(slot)-1] = container  
