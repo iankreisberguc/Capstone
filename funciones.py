@@ -26,7 +26,7 @@ def generar_espacios(data, barco):
 
 
 def calcular_centro_masa(barco):
-    centro_gravedad = {'lcg': 0, 'tcg': 0, 'vcg': 0}
+    centro_gravedad = {'lcg': 0, 'tcg': 0, 'vcg': 15}
     peso = 0
     peso_otro = 36075
     for bay in barco.bays:
@@ -40,11 +40,10 @@ def calcular_centro_masa(barco):
                         centro_gravedad['tcg'] = (aux_tcg * peso_otro + container.tcg * container.peso) / (peso_otro + container.peso)
                         centro_gravedad['vcg'] = (aux_vcg * peso_otro + container.vcg * container.peso) / (peso_otro + container.peso)
                         centro_gravedad['lcg'] = (aux_lcg * peso + bay.lcg * container.peso) / (peso + container.peso)
+                        peso_otro += container.peso
                         peso += container.peso
         aux_lcg = centro_gravedad['lcg']
-        aux_vcg = centro_gravedad['vcg']
         centro_gravedad['lcg'] = (aux_lcg * peso + bay.lcg * bay.peso) / (peso + bay.peso)
-        centro_gravedad['vcg'] = (aux_vcg * peso + 15 * bay.peso) / (peso + bay.peso)
         peso += bay.peso
     
     return centro_gravedad
