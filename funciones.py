@@ -48,11 +48,11 @@ def calcular_centro_masa(barco):
 
 def verificar_centro_de_dravedad(barco, data_hydrostatic, dis_index):
     cen_grav = calcular_centro_masa(barco)
-    """
+    
     if cen_grav['lcg'] < data_hydrostatic.iloc[dis_index]['minLcg (m)'] or\
         cen_grav['lcg'] > ata_hydrostatic.iloc[dis_index]['maxLcg (m)']:
         return False
-    """
+    
     if cen_grav['tcg'] < data_hydrostatic.iloc[dis_index]['minTcg (m)'] or\
         cen_grav['tcg'] > data_hydrostatic.iloc[dis_index]['maxTcg (m)']:
         return False
