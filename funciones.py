@@ -89,34 +89,27 @@ def verificar_esfuerfos_de_corte(data_buoyancy, barco, dis_index):
 
 def over_stowage(barco):
     contador = 0
+    contador_bay = 0
     for bay in barco.bays:
         for stack in range(16):
-            ya_revisados = []
-            for i in range(18):
-                aux = [None, None]
-                if bay.espacio[i][stack][0] not in [0, 1, 2, None]:
-                    if bay.espacio[i][stack][0].end_port not in ya_revisados:
-                        aux[0] = bay.espacio[i][stack][0].end_port 
-                        ya_revisados.append(aux[0])
-                    
-                if bay.espacio[i][stack][1] not in [0, 1, 2, None]:
-                    if bay.espacio[i][stack][1].end_port not in ya_revisados:   
-                        aux[1] = bay.espacio[i][stack][1].end_port
-                        ya_revisados.append(aux[1])
-
-                for tier in range(i + 1, 18):
-                    slots = bay.espacio[tier][stack]
-                    if slots[0] not in [0, 1, 2, None]:
-                        if aux[0] != None:
-                            if aux[0] < slots[0].end_port:
-                                contador += 1                                 
-                        if slots[0].largo == 40:
-                            continue
+            aux = 12
+            for tier in range(18):
+                slots = bay.espacio[tier][stack]
+                if slots[0] not in [0, 1, 2, None]:
+                    if aux < slots[0].end_port and contador_bay == 15:
+                        contador += 1 
+                    elif aux > slots[0].end_port:
+                        aux = slots[0].end_port  
+                        continue               
+                    if slots[0].largo == 40:
+                        continue
                         
-                    if slots[1] not in [0, 1, 2, None]:
-                        if aux[1] != None:
-                            if aux[1] < slots[1].end_port:
-                                contador += 1
+                if slots[1] not in [0, 1, 2, None]:
+                    if aux < slots[0].end_port and contador_bay == 15:
+                        contador += 1 
+                    elif aux > slots[0].end_port:
+                        aux = slots[0].end_port
+        contador_bay += 1
     return contador
         
 def calcular_valor(barco):
