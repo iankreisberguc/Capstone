@@ -1,4 +1,6 @@
 from clases import Container
+from funciones import verificar_factibilidad_fisica
+import pandas as pd
 
 def crear_primera_solucion (data_prueba, data_slot, barco):
     
@@ -18,6 +20,7 @@ def crear_primera_solucion (data_prueba, data_slot, barco):
             for slot in tier:
                 for contenedor in slot:
                     if slot[0] in [0,1,2] and slot[1] in [0,1,2]:
+                        #verificar con contenedor in....
                         if contenedor == 1 and contador_RC < len(data_RC):
                             peso = data_RC.iloc[contador_RC]['WEIGHT (ton)']
                             tipo = data_RC.iloc[contador_RC]['TYPE']
@@ -140,3 +143,12 @@ def crear_primera_solucion (data_prueba, data_slot, barco):
                 contador_stack += 1
             contador_tier += 1
         contador_bay += 1 
+    print(f"Contador RC", contador_RC)
+    print(f"de un total de:", len(data_RC))
+    print(f"Contador DG", contador_DG)
+    print(f"de un total de:", len(data_DG))
+    print(f"Contador DC", contador_DC)
+    print(f"de un total de:", len(data_))
+
+
+

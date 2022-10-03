@@ -50,7 +50,7 @@ def calcular_centro_masa(barco):
 
 def verificar_centro_de_dravedad(barco, data_hydrostatic, dis_index):
     cen_grav = calcular_centro_masa(barco)
-    
+    print(cen_grav)
     if cen_grav['lcg'] < data_hydrostatic.iloc[dis_index]['minLcg (m)'] or\
         cen_grav['lcg'] > data_hydrostatic.iloc[dis_index]['maxLcg (m)']:
         return False
@@ -72,6 +72,7 @@ def calcular_displacemnt_index(data_hydrostatic, barco):
             menor_val = delta
             menor_index = i
     dis_index = menor_index
+    print(f"Displacemnt index:", dis_index)
     return dis_index
 
 def calcular_esfuerzos_corte(data_buoyancy, bay, barco, dis_index):

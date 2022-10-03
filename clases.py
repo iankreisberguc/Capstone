@@ -4,6 +4,7 @@ class Barco:
     def __init__(self):
         self.bays = []
         self.peso = 0
+        self.carga = 0
 
     def generar_bays(self, data):
         for idex, row in data.iterrows():
@@ -12,6 +13,7 @@ class Barco:
 
     def actualizar_peso(self):
         peso = 0
+        carga = 0
         for bay in self.bays:
             peso += bay.peso
             for tier in range(18):
@@ -20,9 +22,20 @@ class Barco:
                     container_1 = bay.espacio[tier][stack][1]
                     if container_0 not in [0, 1, 2, None]:
                         peso += container_0.peso
+                        if container_0.largo == 40:
+                            carga += 2
+                        else:
+                            carga += 1
                     if container_1 not in [0, 1, 2, None]:
                         peso += container_1.peso
+                        if container_1.largo == 40:
+                            carga += 2
+                        else:
+                            carga += 1
         self.peso = peso
+        self.carga = carga
+
+
 
         
 class Bay:
