@@ -97,7 +97,7 @@ def over_stowage(barco):
             for tier in range(18):
                 slots = bay.espacio[tier][stack]
                 if slots[0] not in [0, 1, 2, None]:
-                    if aux < slots[0].end_port and contador_bay == 15:
+                    if aux < slots[0].end_port:
                         contador += 1 
                     elif aux > slots[0].end_port:
                         aux = slots[0].end_port  
@@ -106,7 +106,7 @@ def over_stowage(barco):
                         continue
                         
                 if slots[1] not in [0, 1, 2, None]:
-                    if aux < slots[0].end_port and contador_bay == 15:
+                    if aux < slots[0].end_port:
                         contador += 1 
                     elif aux > slots[0].end_port:
                         aux = slots[0].end_port

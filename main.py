@@ -34,7 +34,7 @@ for index, row in data_loaded.iterrows():
     vcg = float(data_slot[(data_slot.BAY==bay) & (data_slot.STACK==stack) & (data_slot.TIER==tier) & (data_slot.SLOT==1)].VCG)
     container = Container(peso, tipo, valor, end_port, largo, tcg, vcg, es_cargado)
 
-    #if bay == 15 and stack == 1:
+    #if bay == 15:
     if barco.bays[int(bay)].espacio[int(tier)][int(stack)][int(slot)-1] == None:
         print('Revisa el codigo que hay un error pq hay un comteiner en una posicion invalida')
     
@@ -47,19 +47,29 @@ print(f"Factible: ", verificar_factibilidad_fisica(data_hydrostatic, data_buoyan
 barco.actualizar_peso()
 print(f"Peso:", barco.peso)
 print(f"Carga:", barco.carga/70.33)
+print(f"contenedores de 40 ft", barco.contador_40)
+print(f"contenedores de 20 ft", barco.contador_20)
+print(f"over stowage:", over_stowage(barco))
+resultado_barco_cargado = calcular_valor(barco) - over_stowage(barco)*60
+
+print(f"valor barco:",resultado_barco_cargado)
 print("---------------------------")
-crear_primera_solucion(data_prueba, data_slot, barco)
+primera_solucion = crear_primera_solucion(data_prueba, data_slot, barco)
+print(primera_solucion)
 
 # for bay in barco.bays:
 #     for tier in bay.espacio:
 #         print(tier)
 
 
-resultado_caso_base = calcular_valor(barco) - over_stowage(barco)*60
+resultado_caso_base = calcular_valor(barco) - over_stowage(barco)*60 - primera_solucion*40
 
-print(resultado_caso_base)
+print(f"valor barco:",resultado_caso_base)
 
 print(f"Factible: ", verificar_factibilidad_fisica(data_hydrostatic, data_buoyancy,barco))
 barco.actualizar_peso()
 print(f"Peso:", barco.peso)
 print(f"Carga:", barco.carga/70.33)
+print(f"contenedores de 40 ft", barco.contador_40)
+print(f"contenedores de 20 ft", barco.contador_20)
+print(f"over stowage:", over_stowage(barco))
