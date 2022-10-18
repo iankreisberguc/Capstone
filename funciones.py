@@ -1,4 +1,5 @@
 from json.encoder import INFINITY
+from clases import Container
 
 def verificar_factibilidad_fisica(data_hydrostatic, data_buoyancy, barco):
     #centro de G incompleto
@@ -72,7 +73,7 @@ def calcular_displacemnt_index(data_hydrostatic, barco):
             menor_val = delta
             menor_index = i
     dis_index = menor_index
-    print(f"Displacemnt index:", dis_index)
+    # print(f"Displacemnt index:", dis_index)
     return dis_index
 
 def calcular_esfuerzos_corte(data_buoyancy, bay, barco, dis_index):
@@ -80,7 +81,7 @@ def calcular_esfuerzos_corte(data_buoyancy, bay, barco, dis_index):
     return esfuerzo
 
 def verificar_esfuerfos_de_corte(data_buoyancy, barco, dis_index):
-    for bay in range(20):
+    for bay in range(21):
         esfuezo = calcular_esfuerzos_corte(data_buoyancy, bay, barco, dis_index)
         if esfuezo > barco.bays[bay].max_esfuerzo_corte or\
             esfuezo < barco.bays[bay].min_esfuerzo_corte:
@@ -124,16 +125,50 @@ def calcular_valor(barco):
     return valor
 
 def maximo_peso(bay):
-    peso_restante = [[200 for stack in range(16)], [250 for stack in range(16)]]
+    peso_restante = [[350 for stack in range(16)], [300 for stack in range(16)]]
+    hay_contenedor20 = [[False for stack in range(16)], [False for stack in range(16)]]
     contador_tier = 0
-    for tier in bay.espacios:
+    for tier in bay.espacio:
         for stack in range(16):
             for container in tier[stack]:
                 if container not in [0, 1, 2, None]:
                     if contador_tier < 9:
                         peso_restante[0][stack] -= container.peso
-                    
+                        if container.largo == 20:
+                            hay_contenedor20[0][stack] = True
                     if contador_tier > 9:
                         peso_restante[1][stack] -= container.peso
+                        if container.largo == 20:
+                            hay_contenedor20[1][stack] = True
         contador_tier += 1
-    return peso_restante
+    
+    for cubierta in range(2):
+        for stack in range(16):
+            if hay_contenedor20[cubierta][stack]:
+                peso_restante[cubierta][stack] -= 100
+
+    return peso_restante, hay_contenedor20
+
+
+def primera_carga(data_loaded, data_slot, barco):
+    for index, row in data_loaded.iterrows():
+        bay = row['BAY']
+        stack = row['STACK']
+        tier = row['TIER']
+        slot = row['SLOT']
+        peso = row['WEIGHT (ton)']
+        tipo = row['TYPE']
+        valor = 0
+        es_cargado = True
+        end_port = row['END_PORT']
+        largo = row['LENGTH (ft)']
+        tcg = float(data_slot[(data_slot.BAY==bay) & (data_slot.STACK==stack) & (data_slot.TIER==tier) & (data_slot.SLOT==1)].TCG)
+        vcg = float(data_slot[(data_slot.BAY==bay) & (data_slot.STACK==stack) & (data_slot.TIER==tier) & (data_slot.SLOT==1)].VCG)
+        container = Container(peso, tipo, valor, end_port, largo, tcg, vcg, es_cargado)
+
+        #if bay == 15:
+        if barco.bays[int(bay)].espacio[int(tier)][int(stack)][int(slot)-1] == None:
+            print('Revisa el codigo que hay un error pq hay un comteiner en una posicion invalida')
+        
+        else:
+            barco.bays[int(bay)].espacio[int(tier)][int(stack)][int(slot)-1] = container  

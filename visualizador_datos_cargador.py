@@ -36,6 +36,7 @@ for bay in lista:
         # print(tabla_por_bay)
         tabla_por_bay = tabla_por_bay.reset_index()
         tabla_por_bay = tabla_por_bay.pivot("TIER", "STACK")["LENGTH (ft)"]
+        print(tabla_por_bay)
         # print(tabla_por_bay)
         # print(tabla_por_bay.head(20))
         plt.figure(figsize=(8,8))
