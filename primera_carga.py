@@ -32,7 +32,9 @@ def crear_primera_solucion (data_prueba, data_slot, barco):
                             tcg = float(data_slot[(data_slot.BAY==contador_bay) & (data_slot.STACK==contador_stack) & (data_slot.TIER==contador_tier) & (data_slot.SLOT==1)].TCG)
                             vcg = float(data_slot[(data_slot.BAY==contador_bay) & (data_slot.STACK==contador_stack) & (data_slot.TIER==contador_tier) & (data_slot.SLOT==1)].VCG)
                             contenedor = Container(peso, tipo, valor, end_port, largo, tcg, vcg, es_cargado)
+                            aux = barco.bays[contador_bay].espacio[contador_tier][contador_stack][0]
                             barco.bays[contador_bay].espacio[contador_tier][contador_stack][0] = contenedor
+                            contenedor.tipo_slot = aux
                             contador_RC += 1
                             contador_carga += 1
                     
@@ -46,7 +48,9 @@ def crear_primera_solucion (data_prueba, data_slot, barco):
                             tcg = float(data_slot[(data_slot.BAY==contador_bay) & (data_slot.STACK==contador_stack) & (data_slot.TIER==contador_tier) & (data_slot.SLOT==1)].TCG)
                             vcg = float(data_slot[(data_slot.BAY==contador_bay) & (data_slot.STACK==contador_stack) & (data_slot.TIER==contador_tier) & (data_slot.SLOT==1)].VCG)
                             contenedor = Container(peso, tipo, valor, end_port, largo, tcg, vcg, es_cargado)
+                            aux = barco.bays[contador_bay].espacio[contador_tier][contador_stack][0]
                             barco.bays[contador_bay].espacio[contador_tier][contador_stack][0] = contenedor
+                            contenedor.tipo_slot = aux
                             contador_DG += 1
                             contador_carga += 1
                     
@@ -60,7 +64,9 @@ def crear_primera_solucion (data_prueba, data_slot, barco):
                             tcg = float(data_slot[(data_slot.BAY==contador_bay) & (data_slot.STACK==contador_stack) & (data_slot.TIER==contador_tier) & (data_slot.SLOT==1)].TCG)
                             vcg = float(data_slot[(data_slot.BAY==contador_bay) & (data_slot.STACK==contador_stack) & (data_slot.TIER==contador_tier) & (data_slot.SLOT==1)].VCG)
                             contenedor = Container(peso, tipo, valor, end_port, largo, tcg, vcg, es_cargado)
+                            aux = barco.bays[contador_bay].espacio[contador_tier][contador_stack][0]
                             barco.bays[contador_bay].espacio[contador_tier][contador_stack][0] = contenedor
+                            contenedor.tipo_slot = aux
                             contador_DC += 1
                             contador_carga += 1
 
@@ -76,7 +82,9 @@ def crear_primera_solucion (data_prueba, data_slot, barco):
                                 tcg = float(data_slot[(data_slot.BAY==contador_bay) & (data_slot.STACK==contador_stack) & (data_slot.TIER==contador_tier) & (data_slot.SLOT==1)].TCG)
                                 vcg = float(data_slot[(data_slot.BAY==contador_bay) & (data_slot.STACK==contador_stack) & (data_slot.TIER==contador_tier) & (data_slot.SLOT==1)].VCG)
                                 contenedor = Container(peso, tipo, valor, end_port, largo, tcg, vcg, es_cargado)
+                                aux = barco.bays[contador_bay].espacio[contador_tier][contador_stack][0]
                                 barco.bays[contador_bay].espacio[contador_tier][contador_stack][0] = contenedor
+                                contenedor.tipo_slot = aux
                                 contador_RC += 1
                                 contador_carga += 1
                         
@@ -90,7 +98,9 @@ def crear_primera_solucion (data_prueba, data_slot, barco):
                                 tcg = float(data_slot[(data_slot.BAY==contador_bay) & (data_slot.STACK==contador_stack) & (data_slot.TIER==contador_tier) & (data_slot.SLOT==1)].TCG)
                                 vcg = float(data_slot[(data_slot.BAY==contador_bay) & (data_slot.STACK==contador_stack) & (data_slot.TIER==contador_tier) & (data_slot.SLOT==1)].VCG)
                                 contenedor = Container(peso, tipo, valor, end_port, largo, tcg, vcg, es_cargado)
+                                aux = barco.bays[contador_bay].espacio[contador_tier][contador_stack][0]
                                 barco.bays[contador_bay].espacio[contador_tier][contador_stack][0] = contenedor
+                                contenedor.tipo_slot = aux
                                 contador_DG += 1
                                 contador_carga += 1
                             
@@ -104,7 +114,9 @@ def crear_primera_solucion (data_prueba, data_slot, barco):
                                 tcg = float(data_slot[(data_slot.BAY==contador_bay) & (data_slot.STACK==contador_stack) & (data_slot.TIER==contador_tier) & (data_slot.SLOT==1)].TCG)
                                 vcg = float(data_slot[(data_slot.BAY==contador_bay) & (data_slot.STACK==contador_stack) & (data_slot.TIER==contador_tier) & (data_slot.SLOT==1)].VCG)
                                 contenedor = Container(peso, tipo, valor, end_port, largo, tcg, vcg, es_cargado)
+                                aux = barco.bays[contador_bay].espacio[contador_tier][contador_stack][0]
                                 barco.bays[contador_bay].espacio[contador_tier][contador_stack][0] = contenedor
+                                contenedor.tipo_slot = aux
                                 contador_DC += 1
                                 contador_carga += 1
 
@@ -120,7 +132,9 @@ def crear_primera_solucion (data_prueba, data_slot, barco):
                                 tcg = float(data_slot[(data_slot.BAY==contador_bay) & (data_slot.STACK==contador_stack) & (data_slot.TIER==contador_tier) & (data_slot.SLOT==1)].TCG)
                                 vcg = float(data_slot[(data_slot.BAY==contador_bay) & (data_slot.STACK==contador_stack) & (data_slot.TIER==contador_tier) & (data_slot.SLOT==1)].VCG)
                                 contenedor = Container(peso, tipo, valor, end_port, largo, tcg, vcg, es_cargado)
+                                aux = barco.bays[contador_bay].espacio[contador_tier][contador_stack][1]
                                 barco.bays[contador_bay].espacio[contador_tier][contador_stack][1] = contenedor
+                                contenedor.tipo_slot = aux
                                 contador_RC += 1
                                 contador_carga += 1
                         
@@ -134,7 +148,9 @@ def crear_primera_solucion (data_prueba, data_slot, barco):
                                 tcg = float(data_slot[(data_slot.BAY==contador_bay) & (data_slot.STACK==contador_stack) & (data_slot.TIER==contador_tier) & (data_slot.SLOT==1)].TCG)
                                 vcg = float(data_slot[(data_slot.BAY==contador_bay) & (data_slot.STACK==contador_stack) & (data_slot.TIER==contador_tier) & (data_slot.SLOT==1)].VCG)
                                 contenedor = Container(peso, tipo, valor, end_port, largo, tcg, vcg, es_cargado)
+                                aux = barco.bays[contador_bay].espacio[contador_tier][contador_stack][1]
                                 barco.bays[contador_bay].espacio[contador_tier][contador_stack][1] = contenedor
+                                contenedor.tipo_slot = aux
                                 contador_DG += 1
                                 contador_carga += 1
                             
@@ -148,7 +164,9 @@ def crear_primera_solucion (data_prueba, data_slot, barco):
                                 tcg = float(data_slot[(data_slot.BAY==contador_bay) & (data_slot.STACK==contador_stack) & (data_slot.TIER==contador_tier) & (data_slot.SLOT==1)].TCG)
                                 vcg = float(data_slot[(data_slot.BAY==contador_bay) & (data_slot.STACK==contador_stack) & (data_slot.TIER==contador_tier) & (data_slot.SLOT==1)].VCG)
                                 contenedor = Container(peso, tipo, valor, end_port, largo, tcg, vcg, es_cargado)
+                                aux = barco.bays[contador_bay].espacio[contador_tier][contador_stack][1]
                                 barco.bays[contador_bay].espacio[contador_tier][contador_stack][1] = contenedor
+                                contenedor.tipo_slot = aux
                                 contador_DC += 1
                                 contador_carga += 1
                 contador_stack += 1

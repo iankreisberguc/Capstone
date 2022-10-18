@@ -1,7 +1,7 @@
 import pandas as pd 
 from clases import Bay, Barco, Container
 from funciones import generar_espacios, calcular_centro_masa,\
-    over_stowage, calcular_valor, verificar_esfuerfos_de_corte, verificar_factibilidad_fisica
+    over_stowage, calcular_valor, verificar_esfuerfos_de_corte, verificar_factibilidad_fisica, listar_over_stowage, destruccion
 from primera_carga import crear_primera_solucion
 
 data_barco = pd.read_excel('container_ship_data.xlsx', 'Ship_bays_estr_data', skiprows=4, usecols="C:I", header=1)
@@ -39,7 +39,10 @@ for index, row in data_loaded.iterrows():
         print('Revisa el codigo que hay un error pq hay un comteiner en una posicion invalida')
     
     else:
-        barco.bays[int(bay)].espacio[int(tier)][int(stack)][int(slot)-1] = container  
+        aux = barco.bays[int(bay)].espacio[int(tier)][int(stack)][int(slot)-1]
+        barco.bays[int(bay)].espacio[int(tier)][int(stack)][int(slot)-1] = container
+        container.tipo_slot = aux
+
 
 # print(barco.bays[15].espacio)
 # print(calcular_centro_masa(barco))
@@ -66,10 +69,15 @@ resultado_caso_base = calcular_valor(barco) - over_stowage(barco)*60 - primera_s
 
 print(f"valor barco:",resultado_caso_base)
 
-print(f"Factible: ", verificar_factibilidad_fisica(data_hydrostatic, data_buoyancy,barco))
+print(f"Factible: ", verificar_factibilidad_fisica(data_hydrostatic, data_buoyancy, barco))
 barco.actualizar_peso()
 print(f"Peso:", barco.peso)
 print(f"Carga:", barco.carga/70.33)
 print(f"contenedores de 40 ft", barco.contador_40)
 print(f"contenedores de 20 ft", barco.contador_20)
 print(f"over stowage:", over_stowage(barco))
+
+print("-----------------------")
+print(listar_over_stowage(barco))
+
+destruccion(barco, 1)
