@@ -1,5 +1,6 @@
 from matplotlib.container import BarContainer
 import pandas as pd 
+
 from clases import Barco
 # from funciones import generar_espacios, calcular_centro_masa,\
 #     over_stowage, calcular_valor, verificar_esfuerfos_de_corte, verificar_factibilidad_fisica
@@ -25,7 +26,32 @@ inicio = time.time()
 
 barco.generar_bays(data_barco)
 generar_espacios(data_slot, barco)
-primera_carga(data_loaded, data_slot, barco)  #carga los contenedores que ya estan en el barco desde la data
+
+for index, row in data_loaded.iterrows():
+    bay = row['BAY']
+    stack = row['STACK']
+    tier = row['TIER']
+    slot = row['SLOT']
+    peso = row['WEIGHT (ton)']
+    tipo = row['TYPE']
+    valor = 0
+    es_cargado = True
+    end_port = row['END_PORT']
+    largo = row['LENGTH (ft)']
+    tcg = float(data_slot[(data_slot.BAY==bay) & (data_slot.STACK==stack) & (data_slot.TIER==tier) & (data_slot.SLOT==1)].TCG)
+    vcg = float(data_slot[(data_slot.BAY==bay) & (data_slot.STACK==stack) & (data_slot.TIER==tier) & (data_slot.SLOT==1)].VCG)
+    container = Container(peso, tipo, valor, end_port, largo, tcg, vcg, es_cargado)
+
+    #if bay == 15:
+    if barco.bays[int(bay)].espacio[int(tier)][int(stack)][int(slot)-1] == None:
+        print('Revisa el codigo que hay un error pq hay un comteiner en una posicion invalida')
+    
+    else:
+        aux = barco.bays[int(bay)].espacio[int(tier)][int(stack)][int(slot)-1]
+        barco.bays[int(bay)].espacio[int(tier)][int(stack)][int(slot)-1] = container
+        container.tipo_slot = aux
+
+# primera_carga(data_loaded, data_slot, barco)  #carga los contenedores que ya estan en el barco desde la data
 
 data_RC = data_ordenada[data_ordenada["TYPE"] == "RC"]
 data_noRC = data_ordenada[data_ordenada["TYPE"] != "RC"]
@@ -35,6 +61,7 @@ data_noRC = data_ordenada[data_ordenada["TYPE"] != "RC"]
 
 cargar(data_ordenada, data_slot, barco, contenedores_cargados, data_hydrostatic, data_buoyancy)
 # print(contenedores_cargados)
+
 print(len(contenedores_cargados))
 barco.actualizar_peso()
 print(barco.peso)
@@ -74,6 +101,7 @@ for bay in barco.bays:
 
 # print(f"valor barco:",resultado_caso_base)
 
+
 # print(f"Factible: ", verificar_factibilidad_fisica(data_hydrostatic, data_buoyancy,barco))
 # barco.actualizar_peso()
 # print(f"Peso:", barco.peso)
@@ -81,6 +109,11 @@ for bay in barco.bays:
 # print(f"contenedores de 40 ft", barco.contador_40)
 # print(f"contenedores de 20 ft", barco.contador_20)
 # print(f"over stowage:", over_stowage(barco))
+
+# print("-----------------------")
+# print(listar_over_stowage(barco))
+
+# destruccion(barco, 1)
 
 ############################ AQUI ESTAMOS VISUALIZANDO ###################
 
@@ -117,3 +150,4 @@ for bay in barco.bays:
 #         visualizacion = sns.heatmap(df.transpose(), annot=True, fmt=".0f", linewidths=.5, square = True, cmap = 'YlGnBu', vmin=0, vmax= 10)
 #         visualizacion.invert_yaxis()
 # plt.show()
+

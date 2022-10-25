@@ -70,3 +70,4 @@ class Container:
         self.tcg = tcg
         self.vcg = vcg 
         self.es_cargado = es_cargado
+        self.tipo_slot = None
