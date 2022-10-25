@@ -55,8 +55,9 @@ class Bay:
         # self.vcg = 15
         self.max_esfuerzo_corte = max_esfuerzo_corte
         self.min_esfuerzo_corte = min_esfuerzo_corte
-        self.max_bending = max_bending
+        # self.max_bending = max_bending
         self.peso = peso
+        self.max_peso = max_bending/lcg
         self.espacio = [[[None, None] for stack in range(16)] for tier in range(18)]
 
 class Container: 
