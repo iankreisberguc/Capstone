@@ -2,7 +2,7 @@ import pandas as pd
 from clases import Bay, Barco, Container
 from funciones import generar_espacios, calcular_centro_masa,\
     over_stowage, calcular_valor, calcular_esfuerzos_corte
-from prueba import crear_primera_solucion
+from archivos_sin_uso.prueba import crear_primera_solucion
 
 
 data_barco = pd.read_excel('container_ship_data.xlsx', 'Ship_bays_estr_data', skiprows=4, usecols="C:I", header=1)
