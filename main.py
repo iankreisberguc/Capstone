@@ -29,17 +29,29 @@ barco.generar_bays(data_barco)
 generar_espacios(data_slot, barco)
 
 primera_carga(data_loaded, data_slot, barco)  #carga los contenedores que ya estan en el barco desde la data
-
+barco.actualizar_peso()
+print(barco.peso)
 # data_RC = data_ordenada[data_ordenada["TYPE"] == "RC"]
 # data_noRC = data_ordenada[data_ordenada["TYPE"] != "RC"]
 
-barco.actualizar_peso()
 
-cargar(data_ordenada, data_slot, barco, contenedores_cargados, data_hydrostatic, data_buoyancy)
+#cargar(data_ordenada, data_slot, barco, contenedores_cargados, data_hydrostatic, data_buoyancy)
 
-barco.actualizar_peso()
+#barco.actualizar_peso()
 # print(barco.peso)
-print(len(contenedores_cargados))
+#print(len(contenedores_cargados))
+
+
+# for i in range(50):
+#     lista_destruccion = destruccion(barco, 10)
+#     cargar(data_ordenada, data_slot, barco, contenedores_cargados, data_hydrostatic, data_buoyancy)
+
+# print(lista_destruccion)
+
+# resultado_barco_cargado = calcular_valor(barco) - over_stowage(barco)*60
+# barco.actualizar_peso()
+# print(barco.peso)
+# print(f"valor barco:",resultado_barco_cargado)
 
 fin = time.time()
 
@@ -58,9 +70,6 @@ print(f"El tiempo de ejecucion es: {fin - inicio}")
 # print(f"contenedores de 40 ft", barco.contador_40)
 # print(f"contenedores de 20 ft", barco.contador_20)
 # print(f"over stowage:", over_stowage(barco))
-resultado_barco_cargado = calcular_valor(barco) - over_stowage(barco)*60
-
-print(f"valor barco:",resultado_barco_cargado)
 # print("---------------------------")
 # primera_solucion = crear_primera_solucion(data_prueba, data_slot, barco)
 # print(primera_solucion)
@@ -86,9 +95,9 @@ print(f"valor barco:",resultado_barco_cargado)
 # print("-----------------------")
 # print(listar_over_stowage(barco))
 
-# destruccion(barco, 1)
 
 ############################ AQUI ESTAMOS VISUALIZANDO ###################
+print(calcular_centro_masa(barco))
 
 import matplotlib.pyplot as plt
 import seaborn as sns
