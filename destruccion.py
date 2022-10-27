@@ -2,19 +2,19 @@ from operator import itemgetter
 
 def destruccion(barco, numero):
     lista = listar_over_stowage(barco)
-    lista_repuesta = []
+    lista_respuesta = []
     for i in range(numero):
         if len(lista) == 0:
             ## Para el segundo criterio de destrucción
             return
         info = lista.pop(0)
-        lista_repuesta.append(info)
+        lista_respuesta.append(info)
         bay = info[0]
         cont = bay.espacio[info[2]][info[1]][info[3]]
         tipo = cont.tipo_slot
         bay.espacio[info[2]][info[1]][info[3]] = tipo
-        print(bay.espacio[info[2]][info[1]][info[3]])
-    return lista_repuesta
+        # print(bay.espacio[info[2]][info[1]][info[3]])
+    return lista_respuesta
 
 def listar_over_stowage(barco):
     over_stowage_list = [] #[(bay, stack, tier, slot, valor, aux), (....),....]

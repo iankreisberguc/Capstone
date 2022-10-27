@@ -33,9 +33,9 @@ def cargar (data, data_slot, barco, cargados, data_hydrostatic, data_buoyancy):
                 
                 if contador_infactible == 20:
                     rango_bay, rango_stack = calcular_rangos (barco, estado)
-                    print(f"Cambiamos los rangos por infactivilidad {rango_bay}, {rango_stack}, con estado {estado}")
+                    #print(f"Cambiamos los rangos por infactivilidad {rango_bay}, {rango_stack}, con estado {estado}")
                     pesos_admitibles_bays = calcular_pesos_bays(barco, data_hydrostatic, data_buoyancy)
-                    print(pesos_admitibles_bays)
+                    #print(pesos_admitibles_bays)
                     if rango_bay == False:
                         print('Terminamos rey')
                         return
@@ -43,10 +43,10 @@ def cargar (data, data_slot, barco, cargados, data_hydrostatic, data_buoyancy):
                 if contador_iteraciones > 50:
                     estado = 1
                     rango_bay, rango_stack = calcular_rangos (barco, estado)
-                    print(f"Cambiamos los rangos rudimentariamente {rango_bay}, {rango_stack}")
+                    #print(f"Cambiamos los rangos rudimentariamente {rango_bay}, {rango_stack}")
                     contador_iteraciones = 0
                     pesos_admitibles_bays = calcular_pesos_bays(barco, data_hydrostatic, data_buoyancy)
-                    print(pesos_admitibles_bays)
+                    #print(pesos_admitibles_bays)
 
 def colocar_contenedor (rango_bay, rango_stack, barco, data_slot, row, cargados, index, peso_admitibles_bay):
     peso = row['WEIGHT (ton)']
@@ -110,13 +110,13 @@ def calcular_pesos_bays (barco, data_hydrostatic, data_buoyancy):
 
 def calcular_rangos (barco, estado):
     centro_gravedad = calcular_centro_masa(barco)
-    print(centro_gravedad)
+    # print(centro_gravedad)
 
     if abs(centro_gravedad["tcg"]) > abs(centro_gravedad["lcg"]) and estado == 1:
         tipo = "tcg"
 
     elif abs(centro_gravedad["tcg"]) < abs(centro_gravedad["lcg"]) and estado == 2:
-        if abs(centro_gravedad["lcg"]) < 3:
+        if abs(centro_gravedad["lcg"]) < 3.5:
             tipo = "tcg"
         else: 
             return False, False
@@ -133,21 +133,33 @@ def calcular_rangos (barco, estado):
     if tipo == "tcg":
         rango_bay = [10, 9, 11, 8, 12, 7, 13, 6, 14, 5, 15, 4, 16, 3, 17, 2, 18, 1, 19, 0, 20]
         if  centro_gravedad["tcg"] > 0:
-            rango_stack = [7 - x for x in range(0, 8)]
-            print('Se carga en el cuadrante 2 y 3')
+            if centro_gravedad["tcg"] > 1:
+                rango_stack = [x for x in range(0, 8)]
+            else:
+                rango_stack = [7 - x for x in range(0, 8)]
+            # print('Se carga en el cuadrante 2 y 3')
 
         else:
-            rango_stack = range(8, 15)
-            print('Se carga en el cuadrante 1 y 4')
+            if centro_gravedad["tcg"] < -1:
+                rango_stack = [15 - x for x in range(0, 7)]
+            else: 
+                rango_stack = [x for x in range(8, 16)]
+            # print('Se carga en el cuadrante 1 y 4')
 
     else:
         rango_stack = [8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15, 0]
         if  centro_gravedad["lcg"] > 0:
-            rango_bay = range(11, 21)
-            print('Se carga en el cuadrante 3 y 4')
+            if centro_gravedad["lcg"] > 2.5:
+                rango_bay = [20 - x for x in range(0, 10)]
+            else:
+                rango_bay = [x for x in range(11, 21)]
+            # print('Se carga en el cuadrante 3 y 4')
 
         else:
-            rango_bay = [10 - x for x in range(0, 11)] 
-            print('Se carga en el cuadrante 1 y 2')
+            if centro_gravedad["lcg"] < -2.5:
+                rango_bay = [x for x in range(0, 11)] 
+            else:
+                rango_bay = [10 - x for x in range(0, 11)] 
+            # print('Se carga en el cuadrante 1 y 2')
         
     return rango_bay, rango_stack
