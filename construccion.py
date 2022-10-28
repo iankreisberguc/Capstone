@@ -7,8 +7,9 @@ def cargar (data, data_slot, barco, cargados, data_hydrostatic, data_buoyancy):
     contador_iteraciones = 0
     maximo_infactible = 50
     estado = 1
+    cantidad_grupo_contenedores = 10
 
-    rango_bay, rango_stack = calcular_rangos (barco, estado) 
+    rango_bay, rango_stack = calcular_rangos (barco, estado, data_hydrostatic) 
     pesos_admitibles_bays = calcular_pesos_bays(barco, data_hydrostatic, data_buoyancy)
 
     while True:
@@ -32,7 +33,7 @@ def cargar (data, data_slot, barco, cargados, data_hydrostatic, data_buoyancy):
                     return
                 
                 if contador_infactible == 20:
-                    rango_bay, rango_stack = calcular_rangos (barco, estado)
+                    rango_bay, rango_stack = calcular_rangos (barco, estado, data_hydrostatic)
                     #print(f"Cambiamos los rangos por infactivilidad {rango_bay}, {rango_stack}, con estado {estado}")
                     pesos_admitibles_bays = calcular_pesos_bays(barco, data_hydrostatic, data_buoyancy)
                     #print(pesos_admitibles_bays)
@@ -40,9 +41,9 @@ def cargar (data, data_slot, barco, cargados, data_hydrostatic, data_buoyancy):
                         print('Terminamos rey')
                         return
 
-                if contador_iteraciones > 50:
+                if contador_iteraciones > cantidad_grupo_contenedores:
                     estado = 1
-                    rango_bay, rango_stack = calcular_rangos (barco, estado)
+                    rango_bay, rango_stack = calcular_rangos (barco, estado, data_hydrostatic)
                     #print(f"Cambiamos los rangos rudimentariamente {rango_bay}, {rango_stack}")
                     contador_iteraciones = 0
                     pesos_admitibles_bays = calcular_pesos_bays(barco, data_hydrostatic, data_buoyancy)
@@ -108,7 +109,9 @@ def calcular_pesos_bays (barco, data_hydrostatic, data_buoyancy):
         pesos_admitibles.append(peso_admitible)
     return pesos_admitibles
 
-def calcular_rangos (barco, estado):
+def calcular_rangos (barco, estado, data_hydrostatic):
+    minimo_lcg, maximo_lcg = calcular_rangos_lcg(barco, data_hydrostatic)
+    # print(f'El minimo es {minimo_lcg}, y el maximo {maximo_lcg}')
     centro_gravedad = calcular_centro_masa(barco)
     # print(centro_gravedad)
 
@@ -116,7 +119,7 @@ def calcular_rangos (barco, estado):
         tipo = "tcg"
 
     elif abs(centro_gravedad["tcg"]) < abs(centro_gravedad["lcg"]) and estado == 2:
-        if abs(centro_gravedad["lcg"]) < 3.5:
+        if centro_gravedad["lcg"] > minimo_lcg:
             tipo = "tcg"
         else: 
             return False, False
@@ -163,3 +166,9 @@ def calcular_rangos (barco, estado):
             # print('Se carga en el cuadrante 1 y 2')
         
     return rango_bay, rango_stack
+
+def calcular_rangos_lcg(barco, data_hydrostatic):
+    dis_index = calcular_displacemnt_index(data_hydrostatic, barco)
+    minimo_lcg = data_hydrostatic[data_hydrostatic['displacement index'] == dis_index]['minLcg (m)'].item()
+    maximo_lcg = data_hydrostatic[data_hydrostatic['displacement index'] == dis_index]['maxLcg (m)'].item()
+    return minimo_lcg, maximo_lcg

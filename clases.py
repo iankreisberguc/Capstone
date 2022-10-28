@@ -47,8 +47,6 @@ class Barco:
         self.contador_40 = contador_40
 
 
-
-        
 class Bay:
     def __init__(self, lcg, max_esfuerzo_corte, min_esfuerzo_corte, max_bending, peso):
         self.lcg = lcg
