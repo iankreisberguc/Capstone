@@ -80,7 +80,9 @@ def colocar_contenedor (rango_bay, rango_stack, barco, data_slot, row, cargados,
                             tcg = float(data_slot[(data_slot.BAY==bay) & (data_slot.STACK==stack) & (data_slot.TIER==tier) & (data_slot.SLOT==1)].TCG)
                             vcg = float(data_slot[(data_slot.BAY==bay) & (data_slot.STACK==stack) & (data_slot.TIER==tier) & (data_slot.SLOT==1)].VCG)
                             container = Container(peso, tipo, valor, end_port, largo, tcg, vcg, es_cargado)
+                            aux = barco.bays[bay].espacio[tier][stack][0]
                             barco.bays[bay].espacio[tier][stack][0] = container
+                            container.tipo_slot = aux
                             cargados.append(index)
                             peso_admitibles_bay[bay] -= peso
                             return True
@@ -90,7 +92,9 @@ def colocar_contenedor (rango_bay, rango_stack, barco, data_slot, row, cargados,
                                 tcg = float(data_slot[(data_slot.BAY==bay) & (data_slot.STACK==stack) & (data_slot.TIER==tier) & (data_slot.SLOT==1)].TCG)
                                 vcg = float(data_slot[(data_slot.BAY==bay) & (data_slot.STACK==stack) & (data_slot.TIER==tier) & (data_slot.SLOT==1)].VCG)
                                 container = Container(peso, tipo, valor, end_port, largo, tcg, vcg, es_cargado)
-                                barco.bays[bay].espacio[tier][stack][0] = container 
+                                aux = barco.bays[bay].espacio[tier][stack][0]
+                                barco.bays[bay].espacio[tier][stack][0] = container
+                                container.tipo_slot = aux
                                 cargados.append(index)
                                 peso_admitibles_bay[bay] -= peso
                                 return True
