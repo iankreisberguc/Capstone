@@ -1,4 +1,3 @@
-from json.encoder import INFINITY
 from clases import Container
 
 def generar_espacios(data, barco):
@@ -41,16 +40,11 @@ def calcular_centro_masa(barco):
 
 
 def calcular_displacemnt_index(data_hydrostatic, barco):
-    #El displacemnt index en realidad es -1 pues se utilizo el index fe DF.
     barco.actualizar_peso()
-    menor_index = -1
-    menor_val = INFINITY
+    dis_index = 1
     for i in range(len(data_hydrostatic)):
-        delta = abs(data_hydrostatic.iloc[i]['displacement (ton)']-barco.peso)
-        if delta<menor_val:
-            menor_val = delta
-            menor_index = i
-    dis_index = menor_index
+        if data_hydrostatic.iloc[i]['displacement (ton)'] <= barco.peso:
+            dis_index = i
     return dis_index
 
 
@@ -90,6 +84,33 @@ def calcular_valor(barco):
                         valor += container.valor
     return valor
 
+def bending (barco, numero_bay, data_barco, data_hydrostatic, data_buoyancy):
+    max_bending = data_barco.iloc[numero_bay]['maxBending (ton*m)'] 
+    index = calcular_displacemnt_index(data_hydrostatic, barco)
+    buoyancy = data_buoyancy.iloc[index]
+    for bay in range(numero_bay + 1):
+        peso_bay = barco.bays[bay].peso 
+        for tier in barco.bays[bay].espacio:
+            for stack in range(16):
+                for container in tier[stack]:
+                    if container not in [0, 1, 2, None]:
+                        peso_bay += container.peso
+        max_bending -= (148 - barco.bays[bay].lcg)*(peso_bay - buoyancy[bay])
+    return max_bending
+
+def bending_final (barco, numero_bay, data_barco, data_hydrostatic, data_buoyancy):
+    max_bending = 0
+    index = calcular_displacemnt_index(data_hydrostatic, barco)
+    buoyancy = data_buoyancy.iloc[index]
+    for bay in range(numero_bay + 1):
+        peso_bay = barco.bays[bay].peso 
+        for tier in barco.bays[bay].espacio:
+            for stack in range(16):
+                for container in tier[stack]:
+                    if container not in [0, 1, 2, None]:
+                        peso_bay += container.peso
+        max_bending += (148 - barco.bays[bay].lcg)*(peso_bay - buoyancy[bay])
+    return max_bending
 
 def maximo_peso(bay):
     peso_restante = [[350 for stack in range(16)], [300 for stack in range(16)]]
@@ -142,6 +163,7 @@ def primera_carga(data_loaded, data_slot, barco):
             barco.bays[int(bay)].espacio[int(tier)][int(stack)][int(slot)-1] = container
             container.tipo_slot = aux  
 
+ 
 ####Solo funciones de verificación#######
 
 def verificar_factibilidad_fisica(data_hydrostatic, data_buoyancy, barco):
