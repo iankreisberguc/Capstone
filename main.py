@@ -68,27 +68,48 @@ print(f"El tiempo de ejecucion es: {fin - inicio}")
 #     data = bending(barco.bays[bay], bay, data_barco)
 #     print(data)
 
-for bay in range(21):
-    data = 0
-    for tier in barco.bays[bay].espacio:
-        for stack in range(16):
-            for container in tier[stack]:
-                if container not in [0, 1, 2, None]:
-                    data += container.peso
-    data += barco.bays[bay].peso
-    valor_bending = bending(barco, bay, data_barco, data_hydrostatic, data_buoyancy)
-    valor_por_cargar = bending_final(barco, bay, data_barco, data_hydrostatic, data_buoyancy)
-    print(f"El bay {bay}: {data}, {valor_por_cargar}, {valor_bending}")
+###############################################################################
+import matplotlib.pyplot as plt
+import pickle
+
+with open('peso_output.pickle', 'wb') as handle:
+    pickle.dump({bay_id: barco.bays[bay_id].peso_cargado() for bay_id in range(len(barco.bays))}, handle)
+
+# aux_pesos = []
+
+# for bay in range(21):
+#     data = 0
+#     for tier in barco.bays[bay].espacio:
+#         for stack in range(16):
+#             for container in tier[stack]:
+#                 if container not in [0, 1, 2, None]:
+#                     data += container.peso
+#     data += barco.bays[bay].peso
+#     valor_bending = bending(barco, bay, data_barco, data_hydrostatic, data_buoyancy)
+#     valor_por_cargar = bending_final(barco, bay, data_barco, data_hydrostatic, data_buoyancy)
+#     aux_pesos.append(data)
+#     print(f"El bay {bay}: {data}, {valor_por_cargar}, {valor_bending}")
+
+# plt.figure("Peso cargado en el barco")
+# plt.bar(x=[a for a in range(len(aux_pesos))], height = aux_pesos, color ="red", edgecolor = "black")
+# plt.xlabel("Bay")
+# plt.ylabel("Peso cargado")
+# plt.xticks(list(range(len(aux_pesos))), [i+1 for i in range(len(aux_pesos))])
+# plt.tight_layout()
+# plt.show()
 
 
-for tier in range(18):
-    for stack in range(16):
-        if barco.bays[10].espacio[tier][stack][1] not in [0, 1, 2, None]:
-            print(f'Tier:{tier}, Stack:{stack}->{barco.bays[10].espacio[tier][stack]} / {barco.bays[10].espacio[tier][stack][0].largo}, {barco.bays[10].espacio[tier][stack][1].largo}')
-        elif barco.bays[10].espacio[tier][stack][0] not in [0, 1, 2, None]:
-            print(f'Tier:{tier}, Stack:{stack}->{barco.bays[10].espacio[tier][stack]} / {barco.bays[10].espacio[tier][stack][0].largo}')
-        else:
-            print(f'Tier:{tier}, Stack:{stack}->{barco.bays[10].espacio[tier][stack]}')
+# for tier in range(18):
+#     barco.bays[10].espacio[tier]
+#     for stack in range(16):
+#         if barco.bays[10].espacio[tier][stack][1] not in [0, 1, 2, None]:
+#             print(f'Tier:{tier}, Stack:{stack}->{barco.bays[10].espacio[tier][stack]} / {barco.bays[10].espacio[tier][stack][0].largo}, {barco.bays[10].espacio[tier][stack][1].largo}')
+#         elif barco.bays[10].espacio[tier][stack][0] not in [0, 1, 2, None]:
+#             print(f'Tier:{tier}, Stack:{stack}->{barco.bays[10].espacio[tier][stack]} / {barco.bays[10].espacio[tier][stack][0].largo}')
+#         else:
+#             print(f'Tier:{tier}, Stack:{stack}->{barco.bays[10].espacio[tier][stack]}')
+
+
 # print("-"*50)
 
 # for tier in barco.bays[9].espacio:

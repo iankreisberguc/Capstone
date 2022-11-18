@@ -35,8 +35,8 @@ def cargar (data, data_slot, barco, cargados, data_hydrostatic, data_buoyancy, d
                 if contador_infactible == 20:
                     rango_bay, rango_stack = calcular_rangos (barco, estado, data_hydrostatic)
                     pesos_admitibles_bays = calcular_pesos_bays(barco, data_hydrostatic, data_buoyancy)
-                    print(rango_bay, rango_stack)
-                    print("-"*50)
+                    # print(rango_bay, rango_stack)
+                    # print("-"*50)
                     if rango_bay == False:
                         print('Terminamos rey')
                         return
@@ -44,8 +44,8 @@ def cargar (data, data_slot, barco, cargados, data_hydrostatic, data_buoyancy, d
                 if contador_iteraciones > cantidad_grupo_contenedores:
                     estado = 1
                     rango_bay, rango_stack = calcular_rangos (barco, estado, data_hydrostatic)
-                    print(rango_bay, rango_stack)
-                    print("-"*50)
+                    # print(rango_bay, rango_stack)
+                    # print("-"*50)
                     contador_iteraciones = 0
                     pesos_admitibles_bays = calcular_pesos_bays(barco, data_hydrostatic, data_buoyancy)
 
@@ -118,8 +118,8 @@ def calcular_pesos_bays (barco, data_hydrostatic, data_buoyancy):
 def calcular_rangos (barco, estado, data_hydrostatic):
     minimo_lcg, maximo_lcg, metacentro, centro_lcg = calcular_rangos_lcg(barco, data_hydrostatic)
     centro_gravedad = calcular_centro_masa(barco)
-    print(centro_gravedad)
-    print(minimo_lcg, maximo_lcg, centro_lcg)
+    # print(centro_gravedad)
+    # print(minimo_lcg, maximo_lcg, centro_lcg)
     if abs(centro_gravedad["tcg"]) > abs(centro_gravedad["lcg"] - centro_lcg) and estado == 1:
         tipo = "tcg"
 
