@@ -3,6 +3,8 @@ import pickle
 from funciones import *
 from prueba_vcg import *
 import time
+import pandas as pd
+import numpy as np
 
 
 def grafico_peso_barco():
@@ -100,3 +102,30 @@ def grafico_parametros(barco, data_slot, data_hydrostatic, data_loaded):
     # plt.title('Lab')
     # plt.show()
 
+def grafico_comparativo_peso_barco(barco, data_hydrostatic, data_buoyancy):
+    with open('peso_output.pickle', 'rb') as handle:
+        peso = pickle.load(handle)
+    dis_index = calcular_displacemnt_index(data_hydrostatic, barco)
+    buoyancy = []
+    for i in range(21):
+        buoyancy.append(data_buoyancy.iloc[dis_index][i])
+
+    lista_pesos = list(peso.values())
+    print(lista_pesos)
+    print(buoyancy)
+    data = pd.DataFrame({'Peso' :  lista_pesos,
+                     'Buoyancy': buoyancy},
+                    index=('Bay0', 'Bay1','Bay1','Bay1','Bay1','Bay1','Bay1','Bay1','Bay1',\
+                        'Bay1','Bay1','Bay1','Bay1','Bay1','Bay1','Bay1','Bay1','Bay1','Bay1',\
+                        'Bay1','Bay1',))
+
+
+    n = len(data.index)
+    x = np.arange(n)
+    width = 0.1
+    plt.bar(x - width, data.Peso, width=width, label='Peso')
+    plt.bar(x, data.Buoyancy, width=width, label='Buoyancy')
+    plt.xticks(x, data.index)
+    plt.legend(loc='best')
+    plt.anotate()
+    plt.show()

@@ -168,3 +168,4 @@ with open('peso_output.pickle', 'wb') as handle:
 
 #grafico_peso_barco()
 
+grafico_comparativo_peso_barco(barco, data_hydrostatic, data_buoyancy)
