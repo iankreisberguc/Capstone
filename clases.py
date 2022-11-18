@@ -1,4 +1,6 @@
 # import pandas as pd
+import numpy as np
+
 
 class Barco:
     def __init__(self):
@@ -57,6 +59,12 @@ class Bay:
         self.peso = peso
         self.max_peso = max_bending/lcg
         self.espacio = [[[None, None] for stack in range(16)] for tier in range(18)]
+    
+    def peso_cargado(self):
+        #var = [container for stack_list in self.espacio for slot_list in stack_list for container in slot_list if container not in [1,2,0,None]]
+        # print(var)
+        return np.sum([container.peso for stack_list in self.espacio for slot_list in stack_list for container in slot_list if container not in [0,1,2,0.0,1.0,2.0,"0.0","1.0","2.0","1","2","0",None]])
+        #return np.sum([x.peso for x in [slot for slot in [stack for stack in [tier for tier in self.espacio]]] if x not in ["1","2","0",None]])
 
 class Container: 
     def __init__(self, peso, tipo, valor, end_port, largo, tcg, vcg, es_cargado):

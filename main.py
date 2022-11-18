@@ -2,8 +2,6 @@ from matplotlib.container import BarContainer
 import pandas as pd 
 
 from clases import Barco
-# from funciones import generar_espacios, calcular_centro_masa,\
-#     over_stowage, calcular_valor, verificar_esfuerfos_de_corte, verificar_factibilidad_fisica
 from construccion import cargar
 from funciones import *
 from destruccion import destruccion
@@ -13,15 +11,28 @@ import time
 data_barco = pd.read_excel('container_ship_data.xlsx', 'Ship_bays_estr_data', skiprows=4, usecols="C:I", header=1)
 data_loaded = pd.read_excel('container_ship_data.xlsx', 'Loaded_containers_data')
 data_slot = pd.read_excel('container_ship_data.xlsx', 'Slot_data')
-data_hydrostatic = pd.read_excel('container_ship_data.xlsx', 'Ship_hydrostatic_data', skiprows=6, usecols="B:H", header=1)
+data_hydrostatic = pd.read_excel('container_ship_data.xlsx', 'Ship_hydrostatic_data', skiprows=6, usecols="B:I", header=1)
 data_buoyancy = pd.read_excel('container_ship_data.xlsx', 'Ship_buoyancy_data', skiprows=4, usecols="C:X", header=1)
 data_cargamento = pd.read_excel("container_ship_data.xlsx","Loading_list_data")
 
-valor_kpi = 15
+valor_kpi = 0
 contenedores_cargados = []
-data_cargamento_filtrada = data_cargamento[data_cargamento["KPI"] > valor_kpi].reset_index()
-data_ordenada = data_cargamento_filtrada.groupby("END_PORT", \
-    group_keys=False).apply(lambda x: x).sort_values(by=["END_PORT", "VALUE (USD)"], ascending=False)
+
+############## ESPACIO PARA DECIDIR COMO ORDENAR LOS CONTENEDORES POR CARGAR ################
+# data_cargamento_filtrada = data_cargamento[data_cargamento["KPI"] > valor_kpi].reset_index()
+# data_ordenada = data_cargamento_filtrada.groupby("END_PORT", \
+#     group_keys=False).apply(lambda x: x).sort_values(by=["END_PORT", "VALUE (USD)"], ascending=False)
+# data_ordenada = data_cargamento.groupby("END", \
+#               group_keys=False).apply(lambda x: x).sort_values(by=["END_PORT", "VALUE (USD)"], ascending=False)
+
+data20 = data_cargamento[data_cargamento["LENGTH (ft)"] == 20].sort_values(by=["WEIGHT (ton)"], ascending=False)
+data40 = data_cargamento[data_cargamento["LENGTH (ft)"] == 40].sort_values(by=["WEIGHT (ton)"], ascending=False)
+
+data_ordenada = pd.concat([data20, data40], axis=0).reset_index()
+
+data_ordenada = data_ordenada.drop(['index'], axis=1)
+
+##############################################################################################
 barco = Barco()
 
 inicio = time.time()
@@ -32,74 +43,80 @@ generar_espacios(data_slot, barco)
 primera_carga(data_loaded, data_slot, barco)  #carga los contenedores que ya estan en el barco desde la data
 barco.actualizar_peso()
 print(barco.peso)
-# data_RC = data_ordenada[data_ordenada["TYPE"] == "RC"]
-# data_noRC = data_ordenada[data_ordenada["TYPE"] != "RC"]
+print(calcular_centro_masa(barco))
+contenedores_movidos = movimiento_contenedores(barco, 0, data_slot, data_loaded, data_barco, data_hydrostatic, data_buoyancy)
 
-contenedores_movidos = movimiento_contenedores(barco, 0, data_slot, data_loaded)
-
-cargar(data_ordenada, data_slot, barco, contenedores_cargados, data_hydrostatic, data_buoyancy)
-
+cargar(data_ordenada, data_slot, barco, contenedores_cargados, data_hydrostatic, data_buoyancy, data_barco)
 barco.actualizar_peso()
 print(barco.peso)
-# print(contenedores_cargados)
-print(len(contenedores_cargados))
 
+print(calcular_centro_masa(barco))
 
 # for i in range(50):
 #     lista_destruccion = destruccion(barco, 10)
 #     cargar(data_ordenada, data_slot, barco, contenedores_cargados, data_hydrostatic, data_buoyancy)
 
-# print(lista_destruccion)
 resultado_barco_cargado = calcular_valor(barco) - over_stowage(barco)*60 - contenedores_movidos*45
-# barco.actualizar_peso()
-# print(barco.peso)
+
 print(f"valor barco:",resultado_barco_cargado)
 
 fin = time.time()
 
 print(f"El tiempo de ejecucion es: {fin - inicio}")
 
-# for bay in barco.bays:
-#     primera, segunda = maximo_peso(bay)
-#     print(primera)
+# for bay in range(21):      
+#     data = bending(barco.bays[bay], bay, data_barco)
+#     print(data)
 
-# print(barco.bays[15].espacio)
-# print(calcular_centro_masa(barco))
-# print(f"Factible: ", verificar_factibilidad_fisica(data_hydrostatic, data_buoyancy,barco))
-# barco.actualizar_peso()
-# print(f"Peso:", barco.peso)
-# print(f"Carga:", barco.carga/70.33)
-# print(f"contenedores de 40 ft", barco.contador_40)
-# print(f"contenedores de 20 ft", barco.contador_20)
-# print(f"over stowage:", over_stowage(barco))
-# print("---------------------------")
-# primera_solucion = crear_primera_solucion(data_prueba, data_slot, barco)
-# print(primera_solucion)
+###############################################################################
+import matplotlib.pyplot as plt
+import pickle
 
-# for bay in barco.bays:
-#     for tier in bay.espacio:
-#         print(tier)
+with open('peso_output.pickle', 'wb') as handle:
+    pickle.dump({bay_id: barco.bays[bay_id].peso_cargado() for bay_id in range(len(barco.bays))}, handle)
+
+# aux_pesos = []
+
+# for bay in range(21):
+#     data = 0
+#     for tier in barco.bays[bay].espacio:
+#         for stack in range(16):
+#             for container in tier[stack]:
+#                 if container not in [0, 1, 2, None]:
+#                     data += container.peso
+#     data += barco.bays[bay].peso
+#     valor_bending = bending(barco, bay, data_barco, data_hydrostatic, data_buoyancy)
+#     valor_por_cargar = bending_final(barco, bay, data_barco, data_hydrostatic, data_buoyancy)
+#     aux_pesos.append(data)
+#     print(f"El bay {bay}: {data}, {valor_por_cargar}, {valor_bending}")
+
+# plt.figure("Peso cargado en el barco")
+# plt.bar(x=[a for a in range(len(aux_pesos))], height = aux_pesos, color ="red", edgecolor = "black")
+# plt.xlabel("Bay")
+# plt.ylabel("Peso cargado")
+# plt.xticks(list(range(len(aux_pesos))), [i+1 for i in range(len(aux_pesos))])
+# plt.tight_layout()
+# plt.show()
 
 
-# resultado_caso_base = calcular_valor(barco) - over_stowage(barco)*60 - primera_solucion*40
+# for tier in range(18):
+#     barco.bays[10].espacio[tier]
+#     for stack in range(16):
+#         if barco.bays[10].espacio[tier][stack][1] not in [0, 1, 2, None]:
+#             print(f'Tier:{tier}, Stack:{stack}->{barco.bays[10].espacio[tier][stack]} / {barco.bays[10].espacio[tier][stack][0].largo}, {barco.bays[10].espacio[tier][stack][1].largo}')
+#         elif barco.bays[10].espacio[tier][stack][0] not in [0, 1, 2, None]:
+#             print(f'Tier:{tier}, Stack:{stack}->{barco.bays[10].espacio[tier][stack]} / {barco.bays[10].espacio[tier][stack][0].largo}')
+#         else:
+#             print(f'Tier:{tier}, Stack:{stack}->{barco.bays[10].espacio[tier][stack]}')
 
-# print(f"valor barco:",resultado_caso_base)
 
+# print("-"*50)
 
-# print(f"Factible: ", verificar_factibilidad_fisica(data_hydrostatic, data_buoyancy,barco))
-# barco.actualizar_peso()
-# print(f"Peso:", barco.peso)
-# print(f"Carga:", barco.carga/70.33)
-# print(f"contenedores de 40 ft", barco.contador_40)
-# print(f"contenedores de 20 ft", barco.contador_20)
-# print(f"over stowage:", over_stowage(barco))
-
-# print("-----------------------")
-# print(listar_over_stowage(barco))
-
+# for tier in barco.bays[9].espacio:
+#     print(tier)
 
 ############################ AQUI ESTAMOS VISUALIZANDO ###################
-print(calcular_centro_masa(barco))
+# print(calcular_centro_masa(barco))
 
 # import matplotlib.pyplot as plt
 # import seaborn as sns
@@ -137,4 +154,3 @@ print(calcular_centro_masa(barco))
 #         visualizacion = sns.heatmap(df.transpose(), annot=True, fmt=".0f", linewidths=.5, square = True, cmap = 'YlGnBu', vmin=0, vmax= 10)
 #         visualizacion.invert_yaxis()
 # plt.show()
-

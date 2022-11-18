@@ -1,9 +1,9 @@
 from matplotlib.pyplot import bar
 import pandas as pd
 from clases import Container
-from funciones import maximo_peso
+from funciones import maximo_peso, bending
 
-def movimiento_contenedores(barco, contador, data_slot, data_loaded):
+def movimiento_contenedores(barco, contador, data_slot, data_loaded, data_barco, data_hydrostatic, data_buoyancy):
     df_movidos = None
     valor_maximo = 9
     while True:
@@ -80,20 +80,21 @@ def movimiento_contenedores(barco, contador, data_slot, data_loaded):
     df_movidos = df_movidos.groupby("END_PORT", \
     group_keys=False).apply(lambda x: x).sort_values(by=["END_PORT", "WEIGHT (ton)"], ascending=False)
 
-    # print(df_movidos)
-
     df_movidos20 = df_movidos[df_movidos['LENGTH (ft)'] == 20]
     df_movidos40 = df_movidos[df_movidos['LENGTH (ft)'] == 40]
     
     for bay in [20 - x for x in range(0, 10)]:
+        #max_bending = bending(barco, bay, data_barco, data_hydrostatic, data_buoyancy)
         for stack in range(16):
             for tier in [x for x in range(8)]+[x for x in range(10, 17)]:
                 if barco.bays[bay].espacio[tier][stack][0] != None:
                     slot = 0
                     for index, row in df_movidos20.iterrows():
                         tipo = row['TYPE']
+                        peso = row['WEIGHT (ton)']
+                        # if max_bending - peso*barco.bays[bay].lcg < 0:
+                        #     break
                         if (tipo == 'RC' and barco.bays[bay].espacio[tier][stack][slot] == 1) or tipo == 'DC':
-                            peso = row['WEIGHT (ton)']
                             valor = 0
                             es_cargado = True
                             end_port = row['END_PORT']
@@ -107,19 +108,22 @@ def movimiento_contenedores(barco, contador, data_slot, data_loaded):
                             container.tipo_slot = aux   
 
                             df_movidos20 =  df_movidos20.drop(index = index)
-
+                            #max_bending -= peso*barco.bays[bay].lcg
                             slot += 1
                             if slot == 2:
                                 break
     
     for bay in [20 - x for x in range(0, 10)]:
+        #max_bending = bending(barco, bay, data_barco, data_hydrostatic, data_buoyancy)
         for stack in range(16):
             for tier in range(18):
                 if barco.bays[bay].espacio[tier][stack][0] != None:
                     for index, row in df_movidos40.iterrows():
                         tipo = row['TYPE']
+                        peso = row['WEIGHT (ton)']
+                        # if max_bending - (peso + barco.bays[bay].peso)*abs(barco.bays[bay].lcg) < 0:
+                        #     break
                         if (tipo == 'RC' and barco.bays[bay].espacio[tier][stack][slot] == 1) or tipo == 'DC':
-                            peso = row['WEIGHT (ton)']
                             valor = 0
                             es_cargado = True
                             end_port = row['END_PORT']
@@ -132,6 +136,7 @@ def movimiento_contenedores(barco, contador, data_slot, data_loaded):
                             barco.bays[bay].espacio[tier][stack][0] = container
                             container.tipo_slot = aux   
 
+                            #max_bending -= abs(peso*barco.bays[bay].lcg)
                             df_movidos40 =  df_movidos40.drop(index = index)
                             break
     
