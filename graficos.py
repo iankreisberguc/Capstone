@@ -106,26 +106,30 @@ def grafico_comparativo_peso_barco(barco, data_hydrostatic, data_buoyancy):
     with open('peso_output.pickle', 'rb') as handle:
         peso = pickle.load(handle)
     dis_index = calcular_displacemnt_index(data_hydrostatic, barco)
-    buoyancy = []
-    for i in range(21):
-        buoyancy.append(data_buoyancy.iloc[dis_index][i])
+    list_min =  []
+    list_max = []
+    for bay in range(21):
+        #no estoy seguro si esta al reves
+        list_min.append(data_buoyancy.iloc[dis_index][bay] + barco.bays[bay].min_esfuerzo_corte)
+        list_max.append(data_buoyancy.iloc[dis_index][bay] + barco.bays[bay].max_esfuerzo_corte)
+
 
     lista_pesos = list(peso.values())
-    print(lista_pesos)
-    print(buoyancy)
+  
     data = pd.DataFrame({'Peso' :  lista_pesos,
-                     'Buoyancy': buoyancy},
-                    index=('Bay0', 'Bay1','Bay1','Bay1','Bay1','Bay1','Bay1','Bay1','Bay1',\
-                        'Bay1','Bay1','Bay1','Bay1','Bay1','Bay1','Bay1','Bay1','Bay1','Bay1',\
-                        'Bay1','Bay1',))
-
+                     'Minimo': list_min,
+                     'Maximo': list_max},
+                    index=('Bay0', 'Bay1','Bay2','Bay3','Bay4','Bay5','Bay6','Bay7','Bay8',\
+                        'Bay9','Bay10','Bay11','Bay12','Bay13','Bay14','Bay15','Bay16','Bay17','Bay18',\
+                        'Bay19','Bay20',))
+    
 
     n = len(data.index)
     x = np.arange(n)
     width = 0.1
-    plt.bar(x - width, data.Peso, width=width, label='Peso')
-    plt.bar(x, data.Buoyancy, width=width, label='Buoyancy')
+    plt.bar(x - 2*width, data.Peso, width=width, label='Peso')
+    plt.bar(x - width, data.Minimo , width=width, label='Minimo')
+    plt.bar(x, data.Maximo, width=width, label='Maximo')
     plt.xticks(x, data.index)
     plt.legend(loc='best')
-    plt.anotate()
     plt.show()
