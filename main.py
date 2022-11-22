@@ -64,8 +64,10 @@ resultado_barco_cargado = calcular_valor(barco) - over_stowage(barco)*60 - conte
 for i in range(10):
     centro_gravedad = calcular_centro_masa(barco)
     rango_bay, rango_stack = calcular_rangos_desarme(centro_gravedad)
+    print(rango_stack, rango_bay)
     destruir_overstowage(barco, data_slot, contenedores_cargados, rango_bay, rango_stack)
-#     sacar_contenedores_vcg(barco, data_slot, data_hydrostatic, data_loaded, contenedores_cargados)
+    print(calcular_centro_masa(barco))
+    #sacar_contenedores_vcg(barco, data_slot, data_hydrostatic, data_loaded, contenedores_cargados)
     cargar(data_ordenada, data_slot, barco, contenedores_cargados, data_hydrostatic, data_buoyancy, data_barco)
     barco.actualizar_peso()
     print(barco.peso)

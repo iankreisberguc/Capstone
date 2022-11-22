@@ -7,7 +7,7 @@ def cargar (data, data_slot, barco, cargados, data_hydrostatic, data_buoyancy, d
     contador_iteraciones = 0
     maximo_infactible = 50
     estado = 1
-    cantidad_grupo_contenedores = 100
+    cantidad_grupo_contenedores = 40
 
     rango_bay, rango_stack = calcular_rangos (barco, estado, data_hydrostatic) 
     pesos_admitibles_bays = calcular_pesos_bays(barco, data_hydrostatic, data_buoyancy)
