@@ -1,12 +1,14 @@
 from matplotlib.container import BarContainer
 import pandas as pd 
 from prueba_vcg import *
+from matplotlib import pyplot
 from clases import Barco
 from construccion import cargar
 from funciones import *
 from destruccion import destruccion, destruir_overstowage
 from primer_orden import movimiento_contenedores
 import time
+from graficos import *
 
 data_barco = pd.read_excel('container_ship_data.xlsx', 'Ship_bays_estr_data', skiprows=4, usecols="C:I", header=1)
 data_loaded = pd.read_excel('container_ship_data.xlsx', 'Loaded_containers_data')
@@ -102,6 +104,7 @@ import pickle
 
 with open('peso_output.pickle', 'wb') as handle:
     pickle.dump({bay_id: barco.bays[bay_id].peso_cargado() for bay_id in range(len(barco.bays))}, handle)
+
 
 # aux_pesos = []
 
@@ -210,3 +213,16 @@ with open('peso_output.pickle', 'wb') as handle:
 #         visualizacion = sns.heatmap(df.transpose(), annot=True, fmt=".0f", linewidths=.5, square = True, cmap = 'YlGnBu', vmin=0, vmax= 10)
 #         visualizacion.invert_yaxis()
 # plt.show()
+
+
+
+
+#########################################
+######## Para graficar descomentar ######
+#########################################
+
+#grafico_parametros(barco, data_slot, data_hydrostatic, data_loaded)
+
+#grafico_peso_barco()
+
+#grafico_comparativo_peso_barco(barco, data_hydrostatic, data_buoyancy)
