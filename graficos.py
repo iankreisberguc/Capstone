@@ -60,25 +60,6 @@ def grafico_parametros(barco, data_slot, data_hydrostatic, data_loaded):
 
     print(f"contenedores sacados:", contenedores_sacados)
 
-    # graficos #
-    
-    # for i in range(0,3): 
-        
-    #     N = len(lista[i])-1
-    #     res = lista[i][-N:] 
-    #     if type(res[0]) == str:
-    #         continue
-        
-
-    #     x = np.arange(0,contenedores_sacados/5,1)
-    #     y = res
-
-    #     plt.plot(x,y)
-    #     plt.xlabel('Grupos de contendores sacados')
-    #     plt.ylabel(lista[i][0])
-    #     plt.title(f"Evolucion del {lista[i][0]} al sacar contenedores")
-    #     plt.show()
-
     for i in range(0,3): 
         
         N = len(lista[i])-1
@@ -184,11 +165,11 @@ def grafico_comparativo_peso_barco(barco, data_hydrostatic, data_buoyancy):
     x = np.arange(n)
     width = 0.3
     plt.bar(x - 2*width, data.Peso, width=width, label='Peso')
-    plt.bar(x - 2*width, data.Minimo , width=width, label='Minimo')
-    plt.bar(x, data.Maximo, width=width, label='Maximo')
+    #plt.bar(x - width, data.Minimo , width=width, label='Minimo')
+    plt.bar(x - width, data.Maximo, width=width, label='Maximo')
     plt.xticks(x, data.index)
     plt.legend(loc='best')
     plt.xlabel('Bay')
     plt.ylabel('Tonelada')
-    plt.title(f"Peso y Empuje inicial del Barco por Bay")
+    plt.title(f"Esfuerzos de corte")
     plt.show()

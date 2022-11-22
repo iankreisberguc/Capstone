@@ -164,8 +164,8 @@ with open('peso_output.pickle', 'wb') as handle:
 ######## Para graficar descomentar ######
 #########################################
 
-# grafico_parametros(barco, data_slot, data_hydrostatic, data_loaded)
+#grafico_parametros(barco, data_slot, data_hydrostatic, data_loaded)
 
-grafico_peso_barco()
+#grafico_peso_barco()
 
-grafico_comparativo_peso_barco(barco, data_hydrostatic, data_buoyancy)
+#grafico_comparativo_peso_barco(barco, data_hydrostatic, data_buoyancy)
