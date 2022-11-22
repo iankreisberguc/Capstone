@@ -1,10 +1,13 @@
 import matplotlib.pyplot as plt
+from matplotlib import pyplot
 import pickle
 from funciones import *
 from prueba_vcg import *
 import time
 import pandas as pd
 import numpy as np
+
+
 
 
 def grafico_peso_barco():
@@ -82,17 +85,70 @@ def grafico_parametros(barco, data_slot, data_hydrostatic, data_loaded):
         res = lista[i][-N:] 
         if type(res[0]) == str:
             continue
-        
 
-        x = lista_tiempos
-        y = res
+        if i==0:
+            dis_index = calcular_displacemnt_index(data_hydrostatic, barco)
+            # # Asintotas Min y Max.
+            def f_max(x):
+                return 0*x + data_hydrostatic.iloc[dis_index]['maxLcg (m)']
+            def f_min(x):
+                return 0*x + data_hydrostatic.iloc[dis_index]['minLcg (m)']
+            # # Valores del eje X que toma el gráfico.
+            xp = range(0, 6)
+            # # Graficar ambas funciones.
+            pyplot.plot(xp, [f_max(i) for i in xp], label = "Máximo",linestyle='--')
+            pyplot.plot(xp, [f_min(i) for i in xp], label = "Mínimo" ,linestyle='--')
+            
+            x = lista_tiempos
+            y = res
 
-        plt.plot(x,y)
-        plt.xlabel('Tiempo')
-        plt.ylabel(lista[i][0])
-        plt.title(f"Evolucion del {lista[i][0]} al sacar contenedores")
-        plt.show()
+            plt.plot(x,y,label="LCG")
+            plt.xlabel('Tiempo (segundos)')
+            plt.ylabel(lista[i][0])
+            plt.title(f"Evolucion del {lista[i][0]} al sacar contenedores")
+            plt.legend(loc='best')
+            plt.show()
 
+        elif i==1:
+            dis_index = calcular_displacemnt_index(data_hydrostatic, barco)
+            # Asintotas Min y Max.
+            def f_max(x):
+                return 0*x + data_hydrostatic.iloc[dis_index]['maxTcg (m)']
+            def f_min(x):
+                return 0*x + data_hydrostatic.iloc[dis_index]['minTcg (m)']
+            # # Valores del eje X que toma el gráfico.
+            xp = range(0, 6)
+            # # Graficar ambas funciones.
+            pyplot.plot(xp, [f_max(i) for i in xp], label = "Máximo",linestyle='--')
+            pyplot.plot(xp, [f_min(i) for i in xp], label = "Mínimo" ,linestyle='--')
+            x = lista_tiempos
+            y = res
+            plt.plot(x,y,label="TCG")
+            plt.xlabel('Tiempo (segundos)')
+            plt.ylabel(lista[i][0])
+            plt.title(f"Evolucion del {lista[i][0]} al sacar contenedores")
+            plt.legend(loc='best')
+            plt.show()
+
+        elif i==2:
+            # Asintotas Horizontales.
+            def f_max(x):
+                return 0*x + 2
+            def f_min(x):
+                return 0*x + 0.5
+            # Valores del eje X que toma el gráfico.
+            xp = range(0, 6)
+            # Graficar ambas funciones.
+            pyplot.plot(xp, [f_max(i) for i in xp], label = "Máximo",linestyle='--')
+            pyplot.plot(xp, [f_min(i) for i in xp], label = "Mínimo" ,linestyle='--')
+            x = lista_tiempos
+            y = res
+            plt.plot(x,y,label="GM")
+            plt.xlabel('Tiempo (segundos)')
+            plt.ylabel(lista[i][0])
+            plt.title(f"Evolucion del {lista[i][0]} al sacar contenedores")
+            plt.legend(loc='best')
+            plt.show()
     # x = lista_tiempos
     # y = lcg
 
@@ -119,17 +175,20 @@ def grafico_comparativo_peso_barco(barco, data_hydrostatic, data_buoyancy):
     data = pd.DataFrame({'Peso' :  lista_pesos,
                      'Minimo': list_min,
                      'Maximo': list_max},
-                    index=('Bay0', 'Bay1','Bay2','Bay3','Bay4','Bay5','Bay6','Bay7','Bay8',\
-                        'Bay9','Bay10','Bay11','Bay12','Bay13','Bay14','Bay15','Bay16','Bay17','Bay18',\
-                        'Bay19','Bay20',))
+                    index=('0', '1','2','3','4','5','6','7','8',\
+                        '9','10','11','12','13','14','15','16','17','18',\
+                        '19','20',))
     
 
     n = len(data.index)
     x = np.arange(n)
-    width = 0.1
+    width = 0.3
     plt.bar(x - 2*width, data.Peso, width=width, label='Peso')
-    plt.bar(x - width, data.Minimo , width=width, label='Minimo')
+    plt.bar(x - 2*width, data.Minimo , width=width, label='Minimo')
     plt.bar(x, data.Maximo, width=width, label='Maximo')
     plt.xticks(x, data.index)
     plt.legend(loc='best')
+    plt.xlabel('Bay')
+    plt.ylabel('Tonelada')
+    plt.title(f"Peso y Empuje inicial del Barco por Bay")
     plt.show()

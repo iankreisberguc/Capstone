@@ -1,6 +1,6 @@
 from matplotlib.container import BarContainer
 import pandas as pd 
-
+from matplotlib import pyplot
 from clases import Barco
 from construccion import cargar
 from funciones import *
@@ -161,11 +161,11 @@ with open('peso_output.pickle', 'wb') as handle:
 
 
 #########################################
-########Para graficar descomentar########
+######## Para graficar descomentar ######
 #########################################
 
-#grafico_parametros(barco, data_slot, data_hydrostatic, data_loaded)
+# grafico_parametros(barco, data_slot, data_hydrostatic, data_loaded)
 
-# grafico_peso_barco()
+grafico_peso_barco()
 
 grafico_comparativo_peso_barco(barco, data_hydrostatic, data_buoyancy)
