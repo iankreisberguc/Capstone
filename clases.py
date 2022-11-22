@@ -77,3 +77,4 @@ class Container:
         self.vcg = vcg 
         self.es_cargado = es_cargado
         self.tipo_slot = None
+        self.index = None

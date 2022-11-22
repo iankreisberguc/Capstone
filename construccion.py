@@ -7,7 +7,7 @@ def cargar (data, data_slot, barco, cargados, data_hydrostatic, data_buoyancy, d
     contador_iteraciones = 0
     maximo_infactible = 50
     estado = 1
-    cantidad_grupo_contenedores = 50
+    cantidad_grupo_contenedores = 100
 
     rango_bay, rango_stack = calcular_rangos (barco, estado, data_hydrostatic) 
     pesos_admitibles_bays = calcular_pesos_bays(barco, data_hydrostatic, data_buoyancy)
@@ -81,6 +81,7 @@ def colocar_contenedor (rango_bay, rango_stack, barco, data_slot, row, cargados,
                             tcg = float(data_slot[(data_slot.BAY==bay) & (data_slot.STACK==stack) & (data_slot.TIER==tier) & (data_slot.SLOT==1)].TCG)
                             vcg = float(data_slot[(data_slot.BAY==bay) & (data_slot.STACK==stack) & (data_slot.TIER==tier) & (data_slot.SLOT==1)].VCG)
                             container = Container(peso, tipo, valor, end_port, largo, tcg, vcg, es_cargado)
+                            container.index = index
                             aux = barco.bays[bay].espacio[tier][stack][0]
                             barco.bays[bay].espacio[tier][stack][0] = container
                             container.tipo_slot = aux
@@ -94,6 +95,7 @@ def colocar_contenedor (rango_bay, rango_stack, barco, data_slot, row, cargados,
                                 tcg = float(data_slot[(data_slot.BAY==bay) & (data_slot.STACK==stack) & (data_slot.TIER==tier) & (data_slot.SLOT==1)].TCG)
                                 vcg = float(data_slot[(data_slot.BAY==bay) & (data_slot.STACK==stack) & (data_slot.TIER==tier) & (data_slot.SLOT==1)].VCG)
                                 container = Container(peso, tipo, valor, end_port, largo, tcg, vcg, es_cargado)
+                                container.index = index
                                 aux = barco.bays[bay].espacio[tier][stack][0]
                                 barco.bays[bay].espacio[tier][stack][0] = container
                                 container.tipo_slot = aux
