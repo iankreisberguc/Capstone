@@ -1,10 +1,11 @@
 from matplotlib.container import BarContainer
 import pandas as pd 
+from prueba_vcg import *
 from matplotlib import pyplot
 from clases import Barco
 from construccion import cargar
 from funciones import *
-from destruccion import destruccion
+from destruccion import destruccion, destruir_overstowage
 from primer_orden import movimiento_contenedores
 import time
 from graficos import *
@@ -48,14 +49,42 @@ print(calcular_centro_masa(barco))
 contenedores_movidos = movimiento_contenedores(barco, 0, data_slot, data_loaded, data_barco, data_hydrostatic, data_buoyancy)
 
 cargar(data_ordenada, data_slot, barco, contenedores_cargados, data_hydrostatic, data_buoyancy, data_barco)
+resultado_barco_cargado = calcular_valor(barco) - over_stowage(barco)*60 - contenedores_movidos*45
+
+print(f"valor barco:",resultado_barco_cargado)
+print(verificar_centro_de_gravedad(barco, data_hydrostatic))
+#sacar_contenedores_vcg(barco, data_slot, data_hydrostatic, data_loaded, contenedores_cargados)
 barco.actualizar_peso()
 print(barco.peso)
 
 print(calcular_centro_masa(barco))
+print(verificar_centro_de_gravedad(barco, data_hydrostatic))
+print(over_stowage(barco))
+resultado_barco_cargado = calcular_valor(barco) - over_stowage(barco)*60 - contenedores_movidos*45
 
-# for i in range(50):
-#     lista_destruccion = destruccion(barco, 10)
-#     cargar(data_ordenada, data_slot, barco, contenedores_cargados, data_hydrostatic, data_buoyancy)
+
+for i in range(10):
+    centro_gravedad = calcular_centro_masa(barco)
+    rango_bay, rango_stack = calcular_rangos_desarme(centro_gravedad)
+    print(rango_stack, rango_bay)
+    destruir_overstowage(barco, data_slot, contenedores_cargados, rango_bay, rango_stack)
+    print(calcular_centro_masa(barco))
+    #sacar_contenedores_vcg(barco, data_slot, data_hydrostatic, data_loaded, contenedores_cargados)
+    cargar(data_ordenada, data_slot, barco, contenedores_cargados, data_hydrostatic, data_buoyancy, data_barco)
+    barco.actualizar_peso()
+    print(barco.peso)
+   
+# #     #lista_destruccion = destruccion(barco, 10)
+# #     print("destruccion")
+# #     print(over_stowage(barco))
+# #     print("construccion")
+# #     cargar(data_ordenada, data_slot, barco, contenedores_cargados, data_hydrostatic, data_buoyancy, data_barco)
+# #     print(over_stowage(barco))
+# #     resultado_barco_cargado = calcular_valor(barco) - over_stowage(barco)*60 - contenedores_movidos*45
+# #     print(f"valor barco:",resultado_barco_cargado)
+# #     print(barco.peso)
+    print(calcular_centro_masa(barco))
+    print(verificar_centro_de_gravedad(barco, data_hydrostatic))
 
 resultado_barco_cargado = calcular_valor(barco) - over_stowage(barco)*60 - contenedores_movidos*45
 
@@ -122,6 +151,34 @@ with open('peso_output.pickle', 'wb') as handle:
 
 # import matplotlib.pyplot as plt
 # import seaborn as sns
+
+# for i in range(1, 21):
+#     if i != 14:
+#         diccionario = {}
+#         for tier in range(18):
+#             lista = []
+#             for stack in barco.bays[i].espacio[tier]:
+#                 if stack[0] not in [0, 1, 2, None]:
+#                     lista.append(stack[0].end_port)
+
+#                 elif stack[0] == None:
+#                     lista.append(0)
+
+#                 elif stack[0] == 1:
+#                     lista.append(0)
+                    
+#                 else:
+#                     lista.append(0)
+
+#             diccionario[f"{tier}"] = lista        
+#         df = pd.DataFrame(diccionario)
+#         plt.figure(figsize=(8,8))
+#         plt.xlabel('TIER', size = 15)
+#         plt.ylabel('STACK', size = 15)
+#         plt.title('VISUALIZACIÓN DEL BARCO CARGADO EN EL BAY %i' %i, size = 15)
+#         visualizacion = sns.heatmap(df.transpose(), annot=True, fmt=".0f", linewidths=.5, square = True,cbar=False, cmap='tab20')
+#         visualizacion.invert_yaxis()
+# plt.show()
 
 # for i in range(1, 21):
 #     if i != 14:
