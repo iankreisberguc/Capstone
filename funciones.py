@@ -199,3 +199,43 @@ def verificar_esfuerfos_de_corte(data_buoyancy, barco, dis_index):
             esfuezo < barco.bays[bay].min_esfuerzo_corte:
             return False
     return True
+
+def calcular_parametros(barco, data_hidrostatic):
+    cen_grav = calcular_centro_masa(barco)
+    dis_index = calcular_displacemnt_index(data_hidrostatic, barco)
+    parametros = {"lcg": cen_grav["lcg"], "tcg": cen_grav["tcg"], "GM": data_hidrostatic.iloc[dis_index]["metacenter (m)"]-cen_grav["vcg"]}
+    return parametros
+
+def esfuerzos_bay (barco, data_hydrostatic, data_buoyancy):
+    lista = []
+    index = calcular_displacemnt_index(data_hydrostatic, barco)
+    buoyancy = data_buoyancy.iloc[index]
+    for bay in range(21):
+        peso_bay = barco.bays[bay].peso 
+        for tier in barco.bays[bay].espacio:
+            for stack in range(16):
+                for container in tier[stack]:
+                    if container not in [0, 1, 2, None]:
+                        peso_bay += container.peso
+        esfuerzo_corte = peso_bay-buoyancy[bay]
+        lista.append(esfuerzo_corte)
+    return lista
+
+def ocupacion (barco):
+    contador = 0
+    tipos = {"DC": 0,"RC": 0,"DG": 0,"20ft": 0,"40ft": 0}
+    puertos = [0,0,0,0,0,0,0,0,0,0,0,0]
+    for bay in barco.bays:
+        for tier in bay.espacio:
+            for stack in tier:
+                for container in stack:
+                    if container not in [0,1,2,None]:
+                        contador += container.largo
+                        tipos[container.tipo] += 1
+                        tipos[f"{container.largo}ft"] += 1
+                        puertos[container.end_port-1] += 1
+    contador = contador/20
+    porcentaje_ocupacion = (contador/7032)*100
+    return porcentaje_ocupacion, tipos, puertos
+
+

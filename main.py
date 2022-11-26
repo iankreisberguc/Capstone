@@ -47,7 +47,7 @@ barco.actualizar_peso()
 print(barco.peso)
 print(calcular_centro_masa(barco))
 contenedores_movidos = movimiento_contenedores(barco, 0, data_slot, data_loaded, data_barco, data_hydrostatic, data_buoyancy)
-
+print(f"contenedores relocalizados: {contenedores_movidos}")
 cargar(data_ordenada, data_slot, barco, contenedores_cargados, data_hydrostatic, data_buoyancy, data_barco)
 resultado_barco_cargado = calcular_valor(barco) - over_stowage(barco)*60 - contenedores_movidos*45
 
@@ -68,7 +68,7 @@ for i in range(10):
     rango_bay, rango_stack = calcular_rangos_desarme(centro_gravedad)
     print(rango_stack, rango_bay)
     destruir_overstowage(barco, data_slot, contenedores_cargados, rango_bay, rango_stack)
-    print(calcular_centro_masa(barco))
+    print(calcular_parametros(barco, data_hydrostatic))
     #sacar_contenedores_vcg(barco, data_slot, data_hydrostatic, data_loaded, contenedores_cargados)
     cargar(data_ordenada, data_slot, barco, contenedores_cargados, data_hydrostatic, data_buoyancy, data_barco)
     barco.actualizar_peso()
@@ -90,6 +90,9 @@ resultado_barco_cargado = calcular_valor(barco) - over_stowage(barco)*60 - conte
 
 print(f"valor barco:",resultado_barco_cargado)
 
+print("esfuerzos de corte")
+print(esfuerzos_bay (barco, data_hydrostatic, data_buoyancy))
+
 fin = time.time()
 
 print(f"El tiempo de ejecucion es: {fin - inicio}")
@@ -99,27 +102,31 @@ print(f"El tiempo de ejecucion es: {fin - inicio}")
 #     print(data)
 
 ###############################################################################
-import matplotlib.pyplot as plt
-import pickle
+# import matplotlib.pyplot as plt
+# import pickle
 
-with open('peso_output.pickle', 'wb') as handle:
-    pickle.dump({bay_id: barco.bays[bay_id].peso_cargado() for bay_id in range(len(barco.bays))}, handle)
+# with open('peso_output.pickle', 'wb') as handle:
+#     pickle.dump({bay_id: barco.bays[bay_id].peso_cargado() for bay_id in range(len(barco.bays))}, handle)
+print("ocupacion del barco")
+porcentaje_ocupacion, tipos , puertos = ocupacion(barco)
+print(porcentaje_ocupacion)
+print(tipos)
+print(puertos)
+print(over_stowage(barco))
+aux_pesos = []
 
-
-# aux_pesos = []
-
-# for bay in range(21):
-#     data = 0
-#     for tier in barco.bays[bay].espacio:
-#         for stack in range(16):
-#             for container in tier[stack]:
-#                 if container not in [0, 1, 2, None]:
-#                     data += container.peso
-#     data += barco.bays[bay].peso
-#     valor_bending = bending(barco, bay, data_barco, data_hydrostatic, data_buoyancy)
-#     valor_por_cargar = bending_final(barco, bay, data_barco, data_hydrostatic, data_buoyancy)
-#     aux_pesos.append(data)
-#     print(f"El bay {bay}: {data}, {valor_por_cargar}, {valor_bending}")
+for bay in range(21):
+    data = 0
+    for tier in barco.bays[bay].espacio:
+        for stack in range(16):
+            for container in tier[stack]:
+                if container not in [0, 1, 2, None]:
+                    data += container.peso
+    data += barco.bays[bay].peso
+    valor_bending = bending(barco, bay, data_barco, data_hydrostatic, data_buoyancy)
+    valor_por_cargar = bending_final(barco, bay, data_barco, data_hydrostatic, data_buoyancy)
+    aux_pesos.append(data)
+    print(f"El bay {bay}: {data}, {valor_por_cargar}, {valor_bending}")
 
 # plt.figure("Peso cargado en el barco")
 # plt.bar(x=[a for a in range(len(aux_pesos))], height = aux_pesos, color ="red", edgecolor = "black")
@@ -149,8 +156,8 @@ with open('peso_output.pickle', 'wb') as handle:
 ############################ AQUI ESTAMOS VISUALIZANDO ###################
 # print(calcular_centro_masa(barco))
 
-# import matplotlib.pyplot as plt
-# import seaborn as sns
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 # for i in range(1, 21):
 #     if i != 14:
@@ -221,8 +228,8 @@ with open('peso_output.pickle', 'wb') as handle:
 ######## Para graficar descomentar ######
 #########################################
 
-#grafico_parametros(barco, data_slot, data_hydrostatic, data_loaded)
+grafico_peso_barco()
 
-#grafico_peso_barco()
+grafico_comparativo_peso_barco(barco, data_hydrostatic, data_buoyancy)
 
-#grafico_comparativo_peso_barco(barco, data_hydrostatic, data_buoyancy)
+grafico_parametros(barco, data_slot, data_hydrostatic, data_loaded, contenedores_cargados)

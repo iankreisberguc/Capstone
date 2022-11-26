@@ -31,8 +31,9 @@ def Calcular_parametros(barco, data_hydrostatic):
     
     return parametros
 
-def grafico_parametros(barco, data_slot, data_hydrostatic, data_loaded):
+def grafico_parametros(barco, data_slot, data_hydrostatic, data_loaded,cargados):
     factibilidad = verificar_centro_de_gravedad(barco, data_hydrostatic)
+    salir = False
     centro_gravedad = calcular_centro_masa(barco)
     parametros = Calcular_parametros(barco, data_hydrostatic)
     rango_bay, rango_stack = calcular_rangos_desarme(centro_gravedad)
@@ -43,9 +44,9 @@ def grafico_parametros(barco, data_slot, data_hydrostatic, data_loaded):
     contenedores_sacados = 0
     inicio_tiempo = time.time()
     lista_tiempos = []
-    while factibilidad["altura metacentrica"] == False:
-        mejorar_vcg(barco, data_hydrostatic, data_slot, data_loaded, rango_stack, rango_bay)
-        contenedores_sacados += 5
+    while salir == False:
+        salir = mejorar_vcg(barco, data_hydrostatic, data_slot, data_loaded, rango_stack, rango_bay,cargados,salir=False)
+        contenedores_sacados += 50
         
         factibilidad = verificar_centro_de_gravedad(barco, data_hydrostatic)
         centro_gravedad = calcular_centro_masa(barco)

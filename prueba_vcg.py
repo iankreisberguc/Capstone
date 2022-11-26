@@ -28,17 +28,17 @@ def sacar_contenedores_vcg(barco, data_slot, data_hydrostatic, data_loaded, carg
     contenedores_sacados = 0
     salir = False
 
-    while salir == False:
-        salir = mejorar_vcg(barco, data_hydrostatic, data_slot, data_loaded, rango_stack, rango_bay, cargados, salir)
+    while factibilidad["altura metacentrica"] == False:
+        mejorar_vcg(barco, data_hydrostatic, data_slot, data_loaded, rango_stack, rango_bay)
         contenedores_sacados += 50
-        
+        factibilidad = verificar_centro_de_gravedad
         centro_gravedad = calcular_centro_masa(barco)
         rango_bay, rango_stack = calcular_rangos_desarme(centro_gravedad)
     print(f"contenedores sacados:", contenedores_sacados)
     
 
 
-def mejorar_vcg(barco, data_hydrostatic, data_slot, data_loaded, rango_stack, rango_bay,cargados,salir):
+def mejorar_vcg(barco, data_hydrostatic, data_slot, data_loaded, rango_stack, rango_bay):
     contador = 0
     for bay in rango_bay:
         tier = [8,7,6,5,4,3,2,1,0]
